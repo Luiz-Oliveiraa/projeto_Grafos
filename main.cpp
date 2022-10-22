@@ -83,7 +83,7 @@ Graph* leitura(ifstream& input_file, int directed, int weightedEdge, int weighte
 
         float nodeSourceWeight, nodeTargetWeight, edgeWeight;
 
-        while(input_file >> idNodeSource >> nodeSourceWeight >> idNodeTarget >> nodeTargetWeight) {
+        while(input_file >> idNodeSource >> nodeSourceWeight >> idNodeTarget >> nodeTargetWeight >> edgeWeight) {
 
             graph->insertEdge(idNodeSource, idNodeTarget, edgeWeight);
             graph->getNode(idNodeSource)->setWeight(nodeSourceWeight);
@@ -139,6 +139,11 @@ int menu(){
     cout << "[8] Caminho Mínimo Dijkstra" << endl;
     cout << "[9] Caminho Mínimo Floyd" << endl;
     cout << "[10] Algoritmos Gulosos (Abre um submenu)" << endl;
+    cout << "Funcionalidades da parte 1 do trabalho:" << endl;
+    cout << "[11] Grafo interseção" << endl;
+    cout << "[12] Grafo União" << endl;
+    cout << "[13] Grafo Diferença" << endl;
+    cout << "[14] Rede Pert" << endl;
     cout << "[0] Sair" << endl;
 
     cin >> selecao;
@@ -212,7 +217,39 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
             
             break;
 
-    }
+        }
+
+        //Grafo Interseção
+        case 11:
+        {
+            
+            break;
+
+        }
+
+        //Grafo União
+        case 12:
+        {
+            
+            break;
+
+        }
+
+        //Grafo Diferença
+        case 13:
+        {
+            
+            break;
+
+        }
+
+        //Rede Pert
+        case 14:
+        {
+            
+            break;
+
+        }
 
   }
 }
@@ -268,7 +305,7 @@ int main(int argc, char const *argv[]) {
 
     if(input_file.is_open()){
 
-        graph = leituraInstancia(input_file, atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));
+        graph = leitura(input_file, atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));
 
     }else
         cout << "Unable to open " << argv[1];
