@@ -281,6 +281,9 @@ int main(int argc, char const *argv[]) {
     //Fechando arquivo de saída
     output_file.close();
 
+    //chamando o destrutor para desencadear a memoria
+    delete graph;
+
     return 0;
 }
 
