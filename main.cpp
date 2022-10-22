@@ -104,8 +104,11 @@ Graph* leituraInstancia(ifstream& input_file, int directed, int weightedEdge, in
     int order;
     int numEdges;
 
-    //Pegando a ordem do grafo
-    input_file >> order >> numEdges;
+    //Pegando a ordem do grafo e o numero de arestas na primeira linha
+    //input_file >> order >> numEdges;
+
+    //Pegando a ordem do grafo na primeira linha
+    input_file >> order;
 
     //Criando objeto grafo
     Graph* graph = new Graph(order, directed, weightedEdge, weightedNode);
