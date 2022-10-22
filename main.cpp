@@ -12,6 +12,27 @@
 
 using namespace std;
 
+/*
+Comandos ara executar o programa no terminal:
+Windows:
+g++ Edge.cpp Node.cpp Graph.cpp main.cpp -o execGrupo6
+.\execGrupo6.exe entrada.txt saida.txt 0 0 0
+Linux:
+g++ Edge.cpp Node.cpp Graph.cpp main.cpp -o execGrupo6
+./execGrupo6.exe entrada.txt saida.txt 0 0 0
+
+Parâmetros:
+executavel,
+nome_da_entrada.txt,
+nome_da_saida.txt,
+booleano se é um grafo direcionado,
+booleano se tem aresta ponderado,
+booleano se tem vertice ponderado
+
+vc tem que deixar uma entrada.txt na pasta onde sera executado o programa
+
+*/
+
 Graph* leitura(ifstream& input_file, int directed, int weightedEdge, int weightedNode){
 
     //Variáveis para auxiliar na criação dos nós no Grafo
