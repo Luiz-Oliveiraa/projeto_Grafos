@@ -19,7 +19,7 @@ Graph* leitura(ifstream& input_file, int directed, int weightedEdge, int weighte
     int idNodeTarget;
     int order;
 
-    //Pegando a ordem do grafo
+    //Pegando a ordem do grafo, lendo a primeira linha
     input_file >> order;
 
     //Criando objeto grafo
@@ -27,14 +27,15 @@ Graph* leitura(ifstream& input_file, int directed, int weightedEdge, int weighte
 
     //Leitura de arquivo
 
+    // aresta não ponderada e vertice não ponderado
     if(!graph->getWeightedEdge() && !graph->getWeightedNode()){
 
-        while(input_file >> idNodeSource >> idNodeTarget) {
-
-            graph->insertEdge(idNodeSource, idNodeTarget, 0);
+        while(input_file >> idNodeSource >> idNodeTarget) { // lendo uma linha da entrada.txt e pegando a aresta (2 vertices)
+ 
+            graph->insertEdge(idNodeSource, idNodeTarget, 0); // criando aresta, como não é ponderada, enviamos 0
 
         }
-
+    //aresta ponderada e vertice não ponderado
     }else if(graph->getWeightedEdge() && !graph->getWeightedNode() ){
 
         float edgeWeight;
@@ -44,7 +45,7 @@ Graph* leitura(ifstream& input_file, int directed, int weightedEdge, int weighte
             graph->insertEdge(idNodeSource, idNodeTarget, edgeWeight);
 
         }
-
+    //nó ponderado e aresta não ponderada:
     }else if(graph->getWeightedNode() && !graph->getWeightedEdge()){
 
         float nodeSourceWeight, nodeTargetWeight;
@@ -56,7 +57,7 @@ Graph* leitura(ifstream& input_file, int directed, int weightedEdge, int weighte
             graph->getNode(idNodeTarget)->setWeight(nodeTargetWeight);
 
         }
-
+    //nó ponderado e aresta ponderada
     }else if(graph->getWeightedNode() && graph->getWeightedEdge()){
 
         float nodeSourceWeight, nodeTargetWeight, edgeWeight;
