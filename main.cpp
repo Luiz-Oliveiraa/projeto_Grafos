@@ -31,6 +31,7 @@ booleano se tem vertice ponderado
 
 vc tem que deixar uma entrada.txt na pasta onde sera executado o programa
 
+Teste commit
 */
 
 Graph* leitura(ifstream& input_file, int directed, int weightedEdge, int weightedNode){
