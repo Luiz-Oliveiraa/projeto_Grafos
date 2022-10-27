@@ -16,6 +16,7 @@ using namespace std;
 
 Autores: 
 Thiago Silva Murta
+Luiz Oliveira
 
 Comandos ara executar o programa no terminal:
 Windows:
