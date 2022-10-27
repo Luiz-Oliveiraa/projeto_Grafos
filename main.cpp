@@ -13,6 +13,11 @@
 using namespace std;
 
 /*
+
+Autores: 
+Thiago Silva Murta
+Luiz Oliveira
+
 Comandos ara executar o programa no terminal:
 Windows:
 g++ Edge.cpp Node.cpp Graph.cpp main.cpp -o execGrupo6
