@@ -5,6 +5,7 @@
 #ifndef GRAPH_H_INCLUDED
 #define GRAPH_H_INCLUDED
 #include "Node.h"
+#include "Edge.h"
 #include <fstream>
 #include <stack>
 #include <list>
@@ -37,11 +38,14 @@ class Graph{
         Node* getFirstNode();
         Node* getLastNode();
         //Other methods
-        void insertNode(int id);
+        void imprimeGrafo();
+        void insertNode(int id, float weight);
         void insertEdge(int id, int target_id, float weight);
+        void insertEdgeAndNodeWeight(int id, int target_id, float edgeWeight, float nodeSourceWeight, float nodeTargetWeight);
         void removeNode(int id);
         bool searchNode(int id);
         Node* getNode(int id);
+        Node* getNodeForced(int id, float weight);
         bool depthFirstSearch(int initialId,int targetId);
         void breadthFirstSearch(ofstream& output_file);
         Graph* getComplement();
@@ -53,6 +57,7 @@ class Graph{
 
     private:
         //Auxiliar methods
+        void inicializaGrafo();
 
 };
 
