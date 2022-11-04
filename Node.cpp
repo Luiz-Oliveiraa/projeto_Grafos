@@ -24,6 +24,8 @@ Node::Node(int id){
 // Destructor
 Node::~Node(){
 
+    //cout << endl << "teste destrutor node" << endl;
+
     Edge* next_edge = this->first_edge;
 
     while(next_edge != nullptr){
@@ -91,6 +93,10 @@ void Node::setWeight(float weight){
 
     this->weight = weight;
 
+}
+
+void Node::setId(int id){
+    this->id = id;
 }
 
 // Other methods
