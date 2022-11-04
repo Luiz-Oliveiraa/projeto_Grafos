@@ -276,18 +276,18 @@ Node *Graph::getNodeForced(int id, float weight)
         } 
     }
     //se o grafo ainda não possuí nos
-    else{
+    //else{
         Node *novo = new Node(id);
         novo->setWeight(weight);
         this->first_node = novo;
         this->last_node = novo;
         this->order += 1;
         return novo;
-    }
+    //}
     
 }
 
-
+/*
 //Function that verifies if there is a path between two nodes
 bool Graph::depthFirstSearch(int initialId, int targetId){
     
@@ -331,3 +331,4 @@ float** Graph::floydMarshall(){
 float* Graph::dijkstra(int id){
     
 }
+*/
