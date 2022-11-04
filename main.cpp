@@ -80,9 +80,11 @@ Graph* leitura(ifstream& input_file, int directed, int weightedEdge, int weighte
 
         while(input_file >> idNodeSource >> nodeSourceWeight >> idNodeTarget >> nodeTargetWeight) {
 
-            graph->insertEdge(idNodeSource, idNodeTarget, 0);
-            graph->getNode(idNodeSource)->setWeight(nodeSourceWeight);
-            graph->getNode(idNodeTarget)->setWeight(nodeTargetWeight);
+            graph->insertEdgeAndNodeWeight(idNodeSource, idNodeTarget, 0, nodeSourceWeight, nodeTargetWeight);
+
+            //graph->insertEdge(idNodeSource, idNodeTarget, 0);
+            //graph->getNode(idNodeSource)->setWeight(nodeSourceWeight);
+            //graph->getNode(idNodeTarget)->setWeight(nodeTargetWeight);
 
         }
     //nó ponderado e aresta ponderada
@@ -92,9 +94,11 @@ Graph* leitura(ifstream& input_file, int directed, int weightedEdge, int weighte
 
         while(input_file >> idNodeSource >> nodeSourceWeight >> idNodeTarget >> nodeTargetWeight >> edgeWeight) {
 
-            graph->insertEdge(idNodeSource, idNodeTarget, edgeWeight);
-            graph->getNode(idNodeSource)->setWeight(nodeSourceWeight);
-            graph->getNode(idNodeTarget)->setWeight(nodeTargetWeight);
+            graph->insertEdgeAndNodeWeight(idNodeSource, idNodeTarget, edgeWeight, nodeSourceWeight, nodeTargetWeight);
+
+            //graph->insertEdge(idNodeSource, idNodeTarget, edgeWeight);
+            //graph->getNode(idNodeSource)->setWeight(nodeSourceWeight);
+            //graph->getNode(idNodeTarget)->setWeight(nodeTargetWeight);
 
         }
 
@@ -151,6 +155,8 @@ int menu(){
     cout << "[12] Grafo União" << endl;
     cout << "[13] Grafo Diferença" << endl;
     cout << "[14] Rede Pert" << endl;
+    cout << "Funcionalidades Auxiliares" << endl;
+    cout << "[15] imprimeGrafo" << endl;
     cout << "[0] Sair" << endl;
 
     cin >> selecao;
@@ -258,6 +264,17 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
 
         }
 
+        //imprime Grafo
+        case 15:
+        {
+            //graph->removeNode(4);
+            //graph->insertNode(200, 0);
+            cout << "primeiro noh: " << graph->getFirstNode()->getId() <<" | ultimo noh: " << graph->getLastNode()->getId() << endl;
+            graph->imprimeGrafo();
+            system("pause");
+            break;
+        }
+
   }
 }
 
@@ -328,7 +345,6 @@ int main(int argc, char const *argv[]) {
     //Fechando arquivo de saída
     output_file.close();
 
-    //chamando o destrutor para desencadear a memoria
     delete graph;
 
     return 0;
