@@ -271,7 +271,7 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
             //graph->insertNode(200, 0);
             cout << "primeiro noh: " << graph->getFirstNode()->getId() <<" | ultimo noh: " << graph->getLastNode()->getId() << endl;
             graph->imprimeGrafo();
-            system("pause");
+            //system("pause");
             break;
         }
 
@@ -283,7 +283,7 @@ int mainMenu(ofstream& output_file, Graph* graph){
     int selecao = 1;
 
     while(selecao != 0){
-        system("clear");
+        //system("clear");
         selecao = menu();
 
         if(output_file.is_open())
