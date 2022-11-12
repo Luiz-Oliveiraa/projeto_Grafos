@@ -156,7 +156,8 @@ int menu(){
     cout << "[13] Grafo Diferença" << endl;
     cout << "[14] Rede Pert" << endl;
     cout << "Funcionalidades Auxiliares" << endl;
-    cout << "[15] imprimeGrafo" << endl;
+    cout << "[15] Imprime Grafo" << endl;
+    cout << "[16] Grafo Subjacente" << endl;
     cout << "[0] Sair" << endl;
 
     cin >> selecao;
@@ -274,6 +275,11 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
             //system("pause");
             break;
         }
+        case 16:{
+            cout << "primeiro noh: " << graph->getFirstNode()->getId() <<" | ultimo noh: " << graph->getLastNode()->getId() << endl;
+            graph->getSubjacent();
+            graph->imprimeGrafo();
+        }
 
   }
 }
@@ -295,7 +301,8 @@ int mainMenu(ofstream& output_file, Graph* graph){
         output_file << endl;
 
     }
-
+    if(selecao == 0)
+        exit(1);
     return 0;
 }
 

@@ -302,14 +302,28 @@ void Graph::breadthFirstSearch(ofstream &output_file){
 Graph *Graph::getComplement(){
     
 }
-
+*/
     
 
 //A function that returns a subjacent of a directed graph, which is a graph which the arcs have opposite directions to the original graph
 Graph* Graph::getSubjacent(){
-    
+    /*cria um novo grafo e ele recebe os primeiros parâmetros*/
+    Graph* novo_grafo = new Graph(0, false, false, false);
+    Node* p = this->first_node;
+    novo_grafo->first_node = p;
+    novo_grafo->last_node = p;
+    novo_grafo->order = this->getOrder();
+    novo_grafo->number_edges = 0;
+    /*faz o novo grafo mudando de digrafo para grafo base*/
+    for(p = this->first_node; p !=nullptr; p = p->getNextNode()){
+        novo_grafo->insertNode(p->getId(), 0);
+        novo_grafo->insertEdge(p->getId(), p->getNextNode()->getId(), 0);
+        novo_grafo->last_node = p;
+        novo_grafo->number_edges++;
+    }
+    return novo_grafo;
 }
-
+/*
 bool Graph::connectedGraph(){
     
 }
