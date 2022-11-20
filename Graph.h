@@ -54,6 +54,8 @@ class Graph{
         bool connectedGraph();
         float** floydMarshall();
         float* dijkstra(int id);
+        //auxiliar
+        bool auxDepthFirstSearch(int initialId, int targetId, Node* p);
 
     private:
         //Auxiliar methods

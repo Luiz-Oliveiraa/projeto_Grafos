@@ -158,6 +158,7 @@ int menu(){
     cout << "Funcionalidades Auxiliares" << endl;
     cout << "[15] Imprime Grafo" << endl;
     cout << "[16] Grafo Subjacente" << endl;
+    cout << "[17] Existe caminho entre os 2 nós?" << endl;
     cout << "[0] Sair" << endl;
 
     cin >> selecao;
@@ -275,12 +276,25 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
             //system("pause");
             break;
         }
+        //
         case 16:{
-            cout << "primeiro noh: " << graph->getFirstNode()->getId() <<" | ultimo noh: " << graph->getLastNode()->getId() << endl;
-            graph->getSubjacent();
-            graph->imprimeGrafo();
+            Graph* novo = new Graph(0, false, false, false);
+            cout << "-Grafo Subjacente-" << endl;
+            novo->getSubjacent();
+            novo->imprimeGrafo();
+            break;
         }
-
+        case 17:{
+            cout << "-Caminho entre 2 nós-" << endl;
+            cout << "Gostaria de verificar se existe um caminho entre os nós: " << endl;
+            int no1, no2;
+            cin >> no1 >> no2;
+            if(!graph->depthFirstSearch(no1, no2))
+                cout << "NÃO EXISTE!(FALSE)" << endl;
+            else
+                cout << "EXISTE!(TRUE)" << endl;
+            break;
+        }
   }
 }
 

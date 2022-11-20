@@ -287,12 +287,26 @@ Node *Graph::getNodeForced(int id, float weight)
     
 }
 
-/*
+
 //Function that verifies if there is a path between two nodes
 bool Graph::depthFirstSearch(int initialId, int targetId){
-    
+    Node* p = NULL;
+    return auxDepthFirstSearch(initialId, targetId, p);
 }
 
+bool Graph::auxDepthFirstSearch(int initialId, int targetId, Node* p){
+    // encontra o nó inicial e depois não volta mais para essa verificão, se não voltaria sempre para o initialID
+    if(p == NULL){
+        for(Node* q = this->first_node; q != nullptr; q = q->getNextNode()){
+            if(q->getId() == initialId)
+                p = q;
+        }
+    }
+    if(p->getId() != targetId)
+        return auxDepthFirstSearch(initialId, targetId, p->getNextNode());
+    return true;
+}
+/*
 
 void Graph::breadthFirstSearch(ofstream &output_file){
     
@@ -310,16 +324,18 @@ Graph* Graph::getSubjacent(){
     /*cria um novo grafo e ele recebe os primeiros parâmetros*/
     Graph* novo_grafo = new Graph(0, false, false, false);
     Node* p = this->first_node;
+    Edge* e = p->getFirstEdge();
     novo_grafo->first_node = p;
     novo_grafo->last_node = p;
-    novo_grafo->order = this->getOrder();
+    novo_grafo->order = 0;
     novo_grafo->number_edges = 0;
     /*faz o novo grafo mudando de digrafo para grafo base*/
-    for(p = this->first_node; p !=nullptr; p = p->getNextNode()){
-        novo_grafo->insertNode(p->getId(), 0);
-        novo_grafo->insertEdge(p->getId(), p->getNextNode()->getId(), 0);
-        novo_grafo->last_node = p;
+    for(p = this->first_node, e = p->getFirstEdge(); p != nullptr, e != nullptr; p = p->getNextNode(), e = e->getNextEdge()){
+        novo_grafo->insertNode(p->getId(), p->getWeight());
+        novo_grafo->insertEdge(p->getId(), e->getTargetId(), e->getWeight());
         novo_grafo->number_edges++;
+        novo_grafo->order++;
+        novo_grafo->last_node = p;
     }
     return novo_grafo;
 }
