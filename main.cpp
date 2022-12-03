@@ -25,7 +25,7 @@ g++ Edge.cpp Node.cpp Graph.cpp main.cpp -o execGrupo6
 .\execGrupo6.exe entrada.txt saida.txt 0 0 0
 Linux:
 g++ Edge.cpp Node.cpp Graph.cpp main.cpp -o execGrupo6
-./execGrupo6.exe entrada.txt saida.txt 0 0 0
+./execGrupo6 entrada saida.txt 0 0 0
 
 Parâmetros:
 executavel,
@@ -59,49 +59,61 @@ Graph* leitura(ifstream& input_file, int directed, int weightedEdge, int weighte
     if(!graph->getWeightedEdge() && !graph->getWeightedNode()){
 
         while(input_file >> idNodeSource >> idNodeTarget) { // lendo uma linha da entrada.txt e pegando a aresta (2 vertices)
- 
-            graph->insertEdge(idNodeSource, idNodeTarget, 0); // criando aresta, como não é ponderada, enviamos 0
-
+            //se existe o segundo nó
+            if(idNodeSource != -1){
+                graph->insertEdge(idNodeSource, idNodeTarget, 0); // criando aresta, como não é ponderada, enviamos 0
+            }
+            //se não existe o segundo nó
+            else{
+                graph->insertNode(idNodeSource, 0); //cria apenas o nó
+            }
         }
+
     //aresta ponderada e vertice não ponderado
     }else if(graph->getWeightedEdge() && !graph->getWeightedNode() ){
 
         float edgeWeight;
 
         while(input_file >> idNodeSource >> idNodeTarget >> edgeWeight) {
-
-            graph->insertEdge(idNodeSource, idNodeTarget, edgeWeight);
+            if(idNodeSource != -1){
+                graph->insertEdge(idNodeSource, idNodeTarget, edgeWeight);//cria dois nos e a aresta
+            }
+            //se não existe o segundo nó
+            else{
+                graph->insertNode(idNodeSource, 0); //cria apenas o nó
+            }
 
         }
+
     //nó ponderado e aresta não ponderada:
     }else if(graph->getWeightedNode() && !graph->getWeightedEdge()){
 
         float nodeSourceWeight, nodeTargetWeight;
 
         while(input_file >> idNodeSource >> nodeSourceWeight >> idNodeTarget >> nodeTargetWeight) {
-
-            graph->insertEdgeAndNodeWeight(idNodeSource, idNodeTarget, 0, nodeSourceWeight, nodeTargetWeight);
-
-            //graph->insertEdge(idNodeSource, idNodeTarget, 0);
-            //graph->getNode(idNodeSource)->setWeight(nodeSourceWeight);
-            //graph->getNode(idNodeTarget)->setWeight(nodeTargetWeight);
-
+            if(idNodeSource != -1){
+                graph->insertEdgeAndNodeWeight(idNodeSource, idNodeTarget, 0, nodeSourceWeight, nodeTargetWeight);//cria dois nos e a aresta
+            }
+            //se não existe o segundo nó
+            else{
+                graph->insertNode(idNodeSource, nodeSourceWeight); //cria apenas o nó
+            }
         }
+
     //nó ponderado e aresta ponderada
     }else if(graph->getWeightedNode() && graph->getWeightedEdge()){
 
         float nodeSourceWeight, nodeTargetWeight, edgeWeight;
 
         while(input_file >> idNodeSource >> nodeSourceWeight >> idNodeTarget >> nodeTargetWeight >> edgeWeight) {
-
-            graph->insertEdgeAndNodeWeight(idNodeSource, idNodeTarget, edgeWeight, nodeSourceWeight, nodeTargetWeight);
-
-            //graph->insertEdge(idNodeSource, idNodeTarget, edgeWeight);
-            //graph->getNode(idNodeSource)->setWeight(nodeSourceWeight);
-            //graph->getNode(idNodeTarget)->setWeight(nodeTargetWeight);
-
+            if(idNodeSource != -1){
+                graph->insertEdgeAndNodeWeight(idNodeSource, idNodeTarget, edgeWeight, nodeSourceWeight, nodeTargetWeight);//cria dois nos e a aresta
+            }
+            //se não existe o segundo nó
+            else{
+                graph->insertNode(idNodeSource, nodeSourceWeight); //cria apenas o nó
+            }
         }
-
     }
 
     return graph;
