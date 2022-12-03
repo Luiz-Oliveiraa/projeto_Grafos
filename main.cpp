@@ -60,7 +60,7 @@ Graph* leitura(ifstream& input_file, int directed, int weightedEdge, int weighte
 
         while(input_file >> idNodeSource >> idNodeTarget) { // lendo uma linha da entrada.txt e pegando a aresta (2 vertices)
             //se existe o segundo nó
-            if(idNodeSource != -1){
+            if(idNodeTarget!= -1){
                 graph->insertEdge(idNodeSource, idNodeTarget, 0); // criando aresta, como não é ponderada, enviamos 0
             }
             //se não existe o segundo nó
@@ -75,7 +75,7 @@ Graph* leitura(ifstream& input_file, int directed, int weightedEdge, int weighte
         float edgeWeight;
 
         while(input_file >> idNodeSource >> idNodeTarget >> edgeWeight) {
-            if(idNodeSource != -1){
+            if(idNodeTarget!= -1){
                 graph->insertEdge(idNodeSource, idNodeTarget, edgeWeight);//cria dois nos e a aresta
             }
             //se não existe o segundo nó
@@ -91,7 +91,7 @@ Graph* leitura(ifstream& input_file, int directed, int weightedEdge, int weighte
         float nodeSourceWeight, nodeTargetWeight;
 
         while(input_file >> idNodeSource >> nodeSourceWeight >> idNodeTarget >> nodeTargetWeight) {
-            if(idNodeSource != -1){
+            if(idNodeTarget!= -1){
                 graph->insertEdgeAndNodeWeight(idNodeSource, idNodeTarget, 0, nodeSourceWeight, nodeTargetWeight);//cria dois nos e a aresta
             }
             //se não existe o segundo nó
@@ -106,7 +106,7 @@ Graph* leitura(ifstream& input_file, int directed, int weightedEdge, int weighte
         float nodeSourceWeight, nodeTargetWeight, edgeWeight;
 
         while(input_file >> idNodeSource >> nodeSourceWeight >> idNodeTarget >> nodeTargetWeight >> edgeWeight) {
-            if(idNodeSource != -1){
+            if(idNodeTarget!= -1){
                 graph->insertEdgeAndNodeWeight(idNodeSource, idNodeTarget, edgeWeight, nodeSourceWeight, nodeTargetWeight);//cria dois nos e a aresta
             }
             //se não existe o segundo nó
