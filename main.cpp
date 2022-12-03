@@ -25,7 +25,7 @@ g++ Edge.cpp Node.cpp Graph.cpp main.cpp -o execGrupo6
 .\execGrupo6.exe entrada.txt saida.txt 0 0 0
 Linux:
 g++ Edge.cpp Node.cpp Graph.cpp main.cpp -o execGrupo6
-./execGrupo6 entrada saida.txt 0 0 0
+./execGrupo6 entrada.txt saida.txt 0 0 0
 
 Parâmetros:
 executavel,
@@ -114,33 +114,6 @@ Graph* leitura(ifstream& input_file, int directed, int weightedEdge, int weighte
                 graph->insertNode(idNodeSource, nodeSourceWeight); //cria apenas o nó
             }
         }
-    }
-
-    return graph;
-}
-
-Graph* leituraInstancia(ifstream& input_file, int directed, int weightedEdge, int weightedNode){
-
-    //Variáveis para auxiliar na criação dos nós no Grafo
-    int idNodeSource;
-    int idNodeTarget;
-    int order;
-    int numEdges;
-
-    //Pegando a ordem do grafo e o numero de arestas na primeira linha
-    //input_file >> order >> numEdges;
-
-    //Pegando a ordem do grafo na primeira linha
-    input_file >> order;
-
-    //Criando objeto grafo
-    Graph* graph = new Graph(order, directed, weightedEdge, weightedNode);
-
-    //Leitura de arquivo
-    while(input_file >> idNodeSource >> idNodeTarget) {
-
-        graph->insertEdge(idNodeSource, idNodeTarget, 0);
-
     }
 
     return graph;
