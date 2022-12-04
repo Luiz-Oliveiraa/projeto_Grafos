@@ -19,6 +19,7 @@ Thiago Silva Murta
 Luiz Oliveira
 André Dutra
 Matheus Peron
+
 Comandos ara executar o programa no terminal:
 Windows:
 g++ Edge.cpp Node.cpp Graph.cpp main.cpp -o execGrupo6
@@ -123,11 +124,8 @@ Graph* leitura(ifstream& input_file, int directed, int weightedEdge, int weighte
     return graph;
 }
 
-/*
-pode escrever varios grafos na mesma saida; para gerar imagem, a saida tem que ser .dot
-depois de executar o programa, no terminal digite:
-dot -Tpng -O saida.dot
-*/
+
+//pode escrever varios grafos na mesma saida; para gerar imagem, a saida tem que ser .dot
 void saida(ofstream& output_file, Graph* graph){
     if(output_file.is_open()){
         if(!graph->getDirected())
@@ -389,8 +387,11 @@ int mainMenu(ofstream& output_file, Graph* graph){
         output_file << endl;
 
     }
-    if(selecao == 0)
+    if(selecao == 0){
+        system("dot -Tpng -O saida.dot");
         exit(1);
+    }
+        
     return 0;
 }
 
