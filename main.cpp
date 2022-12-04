@@ -388,8 +388,9 @@ int mainMenu(ofstream& output_file, Graph* graph){
 
     }
     if(selecao == 0){
+        saida(output_file, graph);
         system("dot -Tpng -O saida.dot");
-        exit(1);
+        return 0;
     }
         
     return 0;
@@ -431,7 +432,6 @@ int main(int argc, char const *argv[]) {
         cout << "Unable to open " << argv[1];
 
     
-    saida(output_file, graph);
     mainMenu(output_file, graph);
 
     
