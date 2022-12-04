@@ -53,12 +53,12 @@ Graph::~Graph()
 void Graph::inicializaGrafo(){
     if(this->order > 0){
         //cria nó com id = -1, para indicar que o id não foi inicializado
-        Node *primeiro = new Node(-1);
+        Node *primeiro = new Node(-1, 0);
         this->first_node = primeiro;
         this->last_node = primeiro;
         //cria nó com id = -1, no final da lista
         for(int i=1; i < this->order; i++){
-            Node *auxNode = new Node(-1);
+            Node *auxNode = new Node(-1, i);
             this->last_node->setNextNode(auxNode);
             this->last_node = auxNode;
         }  
@@ -145,7 +145,7 @@ void Graph::insertNode(int id, float weight)
             }
             //se o nó não está no grafo, insiro no final da lista
             if(aux == this->last_node){
-                Node *novo = new Node(id);
+                Node *novo = new Node(id, this->order +1);
                 novo->setWeight(weight);
                 this->last_node->setNextNode(novo);
                 this->last_node = novo;
@@ -155,7 +155,7 @@ void Graph::insertNode(int id, float weight)
         }
     }
     else{//caso não exista vertice no grafo, cria-se o primeiro
-        Node *novo = new Node(id);
+        Node *novo = new Node(id, this->order +1);
         novo->setWeight(weight);
         this->first_node = novo;
         this->last_node = novo;
@@ -279,7 +279,7 @@ Node *Graph::getNodeForced(int id, float weight)
                 return p;
             //se o nó não está no grafo e nem foi inicializado no construtor
             if(this->last_node == p){
-                Node *aux = new Node(id);
+                Node *aux = new Node(id, this->order +1);
                 aux->setWeight(weight);
                 p->setNextNode(aux);
                 this->last_node = aux;
@@ -290,7 +290,7 @@ Node *Graph::getNodeForced(int id, float weight)
     }
     //se o grafo ainda não possuí nos
     //else{
-        Node *novo = new Node(id);
+        Node *novo = new Node(id, this->order +1);
         novo->setWeight(weight);
         this->first_node = novo;
         this->last_node = novo;
