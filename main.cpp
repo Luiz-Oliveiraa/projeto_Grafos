@@ -25,12 +25,16 @@ g++ Edge.cpp Node.cpp Graph.cpp main.cpp -o execGrupo6
 .\execGrupo6.exe entrada.txt saida.txt 0 0 0
 Linux:
 g++ Edge.cpp Node.cpp Graph.cpp main.cpp -o execGrupo6
-./execGrupo6 entrada.txt saida.txt 0 0 0
+./execGrupo6 entrada.txt saida.dot 0 0 0
+
+Para gerar imagem, a saida tem que ser .dot
+depois de executar o programa, no terminal digite:
+dot -Tpng -O saida.dot
 
 Parâmetros:
 executavel,
 nome_da_entrada.txt,
-nome_da_saida.txt,
+nome_da_saida.dot,
 booleano se é um grafo direcionado,
 booleano se tem aresta ponderado,
 booleano se tem vertice ponderado
@@ -117,6 +121,66 @@ Graph* leitura(ifstream& input_file, int directed, int weightedEdge, int weighte
     }
 
     return graph;
+}
+
+/*
+pode escrever varios grafos na mesma saida; para gerar imagem, a saida tem que ser .dot
+depois de executar o programa, no terminal digite:
+dot -Tpng -O saida.dot
+*/
+void saida(ofstream& output_file, Graph* graph){
+    if(output_file.is_open()){
+        //sintase caso seja um grafo ou digrafo
+        char ligacao;
+        if(!graph->getDirected()){
+            output_file << "strict graph{" << endl;
+            ligacao = '-';
+
+        }else{
+            output_file << "digraph digrafo{" << endl;
+            ligacao = '>';
+        }
+
+        //-----Personalizar layout (circo, dot, fdp, neato, osage, patchwork, sfdp, twopi)
+        //output_file << "\tlayout = circo;" << endl;
+        //output_file << "\tnode [style = filled, color = yellow]" << endl; //personalizar nó
+        //output_file << "\tedge [color = red]" << endl << endl; //personalizar aresta
+
+        //Se o grafo tem nós ponderados ou não
+        if(graph->getWeightedNode()){
+            for(Node* p = graph->getFirstNode(); p!=nullptr; p = p->getNextNode()){
+                output_file << "\t" << p->getLabel() << "[label=\"" << p->getId() << "| p:" << p->getWeight() << "\"]" << endl;
+            }
+        }else{
+            for(Node* p = graph->getFirstNode(); p!=nullptr; p = p->getNextNode()){
+                output_file << "\t" << p->getLabel() << "[label=\"" << p->getId() << "\"]" << endl;
+            }
+        }
+
+        output_file << endl;
+        //Se o grafo tem arestas ponderadas ou não
+        if(graph->getWeightedEdge()){
+            for(Node* p = graph->getFirstNode(); p!=nullptr; p = p->getNextNode()){
+                for(Edge* edge = p->getFirstEdge(); edge != nullptr; edge = edge->getNextEdge()){
+                    output_file << "\t" << p->getLabel() << " -" << ligacao << " " << graph->getNode(edge->getTargetId())->getLabel();
+                    cout << "[label=\"" << edge->getWeight() << "\"]" << endl;
+                }
+            }
+        }else{
+            for(Node* p = graph->getFirstNode(); p!=nullptr; p = p->getNextNode()){
+                for(Edge* edge = p->getFirstEdge(); edge != nullptr; edge = edge->getNextEdge()){
+                    output_file << "\t" << p->getLabel() << " -" << ligacao << " " << graph->getNode(edge->getTargetId())->getLabel() << endl;
+                }
+            }
+        }
+        
+        output_file << endl << "}";
+
+    }
+
+     else
+            cout << "Não foi possivel abrir o arquivo de saida" << endl;
+
 }
 
 int menu(){
@@ -339,6 +403,7 @@ int main(int argc, char const *argv[]) {
         cout << "Unable to open " << argv[1];
 
     
+    saida(output_file, graph);
     mainMenu(output_file, graph);
 
     
