@@ -24,8 +24,6 @@ Node::Node(int id){
 // Destructor
 Node::~Node(){
 
-    //cout << endl << "teste destrutor node" << endl;
-
     Edge* next_edge = this->first_edge;
 
     while(next_edge != nullptr){
@@ -131,6 +129,7 @@ void Node::removeAllEdges(){
 
             next = aux->getNextEdge();
             delete aux;
+            aux = next;
 
         }
 
@@ -157,14 +156,19 @@ int Node::removeEdge(int id, bool directed, Node* target_node){
         if(previous != nullptr)
             previous->setNextEdge(aux->getNextEdge());
 
-        else
+        else{//se for a primeira aresta
             this->first_edge = aux->getNextEdge();
+        }      
 
-        if(aux == this->last_edge)
+        if(aux == this->last_edge){
             this->last_edge = previous;
+        }
+            
 
-        if(aux->getNextEdge() == this->last_edge)
+        if(aux->getNextEdge() == this->last_edge){
             this->last_edge = aux->getNextEdge();
+        }
+            
 
         delete aux;
         // Verifies whether the graph is directed
@@ -172,7 +176,6 @@ int Node::removeEdge(int id, bool directed, Node* target_node){
             this->decrementOutDegree();
 
         else{
-
             this->decrementInDegree();
             target_node->decrementInDegree();
 

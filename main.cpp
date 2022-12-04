@@ -254,9 +254,7 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
         //imprime Grafo
         case 15:
         {
-            //graph->removeNode(4);
-            //graph->insertNode(200, 0);
-            cout << "primeiro noh: " << graph->getFirstNode()->getId() <<" | ultimo noh: " << graph->getLastNode()->getId() << endl;
+            cout << "primeiro noh: " << graph->getFirstNode()->getId() <<" | ultimo noh: " << graph->getLastNode()->getId();
             graph->imprimeGrafo();
             //system("pause");
             break;
