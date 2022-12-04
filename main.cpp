@@ -130,23 +130,16 @@ dot -Tpng -O saida.dot
 */
 void saida(ofstream& output_file, Graph* graph){
     if(output_file.is_open()){
-        //sintase caso seja um grafo ou digrafo
-        char ligacao;
-        if(!graph->getDirected()){
-            output_file << "strict graph{" << endl;
-            ligacao = '-';
-
-        }else{
-            output_file << "digraph digrafo{" << endl;
-            ligacao = '>';
-        }
+        if(!graph->getDirected())
+            output_file << "graph grafo{" << endl;
+        else
+            output_file << "digraph grafo{" << endl;
 
         //-----Personalizar layout (circo, dot, fdp, neato, osage, patchwork, sfdp, twopi)
         //output_file << "\tlayout = circo;" << endl;
         //output_file << "\tnode [style = filled, color = yellow]" << endl; //personalizar nó
         //output_file << "\tedge [color = red]" << endl << endl; //personalizar aresta
-
-        //Se o grafo tem nós ponderados ou não
+        
         if(graph->getWeightedNode()){
             for(Node* p = graph->getFirstNode(); p!=nullptr; p = p->getNextNode()){
                 output_file << "\t" << p->getLabel() << "[label=\"" << p->getId() << "| p:" << p->getWeight() << "\"]" << endl;
@@ -158,29 +151,64 @@ void saida(ofstream& output_file, Graph* graph){
         }
 
         output_file << endl;
-        //Se o grafo tem arestas ponderadas ou não
-        if(graph->getWeightedEdge()){
+        if(!graph->getDirected()){
+            //estrutura auxiliar para diferenciar arestas repetidas de multiarestas
+            int num_multiarestas[graph->getNumberEdges()] = {0};
+            int nodeSource[graph->getNumberEdges()];
+            int nodeTarget[graph->getNumberEdges()];
+
             for(Node* p = graph->getFirstNode(); p!=nullptr; p = p->getNextNode()){
                 for(Edge* edge = p->getFirstEdge(); edge != nullptr; edge = edge->getNextEdge()){
-                    output_file << "\t" << p->getLabel() << " -" << ligacao << " " << graph->getNode(edge->getTargetId())->getLabel();
-                    cout << "[label=\"" << edge->getWeight() << "\"]" << endl;
+
+                    int nodeA = p->getId(), nodeB = edge->getTargetId();
+                    bool imprime = false;
+
+                    for(int i=0;i<graph->getNumberEdges();i++, imprime = false){
+                        if(num_multiarestas[i] == 0){
+                            nodeSource[i] = nodeA;
+                            nodeTarget[i] = nodeB;
+                            num_multiarestas[i]++;
+                            imprime = true;
+                        }else{
+                            if(nodeSource[i] == nodeA && nodeTarget[i] == nodeB){
+                                num_multiarestas[i]++;
+                                imprime = true;
+                            }else if(nodeTarget[i] == nodeA && nodeSource[i] == nodeB){
+                                imprime = false;
+                                break;
+                            }
+                        }
+                        if(imprime){
+                            //se o grafo tem arestas ponderadas ou nao
+                            if(graph->getWeightedEdge()){
+                                output_file << "\t" << p->getLabel() << " -- " << graph->getNode(edge->getTargetId())->getLabel();
+                                cout << "[label=\"" << edge->getWeight() << "\"]" << endl;
+                            }else{
+                                output_file << "\t" << p->getLabel() << " -- " << graph->getNode(edge->getTargetId())->getLabel() << endl;
+                            }
+                            break;
+                        }
+                    }
                 }
             }
         }else{
             for(Node* p = graph->getFirstNode(); p!=nullptr; p = p->getNextNode()){
                 for(Edge* edge = p->getFirstEdge(); edge != nullptr; edge = edge->getNextEdge()){
-                    output_file << "\t" << p->getLabel() << " -" << ligacao << " " << graph->getNode(edge->getTargetId())->getLabel() << endl;
+                    if(graph->getWeightedEdge()){
+                        output_file << "\t" << p->getLabel() << " -> " << graph->getNode(edge->getTargetId())->getLabel();
+                        cout << "[label=\"" << edge->getWeight() << "\"]" << endl;
+                    }else{
+                        output_file << "\t" << p->getLabel() << " -> " << graph->getNode(edge->getTargetId())->getLabel() << endl;
+                    }
                 }
             }
         }
         
-        output_file << endl << "}";
-
+        output_file << endl << "}" << endl;
     }
 
      else
             cout << "Não foi possivel abrir o arquivo de saida" << endl;
-
 }
 
 int menu(){
