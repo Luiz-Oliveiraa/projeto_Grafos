@@ -19,13 +19,6 @@ Edge::Edge(int target_id){
 // Destructor
 Edge::~Edge(){
 
-    //cout << endl << "teste destrutor edge" << endl;
-
-    if (this->next_edge != nullptr){
-        delete this->next_edge;
-        this->next_edge = nullptr;
-    }
-
 }
 
 // Getters

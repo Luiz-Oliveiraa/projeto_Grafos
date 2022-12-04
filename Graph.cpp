@@ -198,36 +198,49 @@ void Graph::insertEdgeAndNodeWeight(int id, int target_id, float edgeWeight, flo
 
 void Graph::removeNode(int id){ 
     //corrigir bug
-    /*for(Node *p = this->first_node; p !=nullptr; p = p->getNextNode()){
-        //se é para remover o primeiro nó
-        if(p->getId() == id && p == this->first_node){
-            this->first_node = this->first_node->getNextNode();
-            p->removeAllEdges();
-            delete p;
-            break;
-        }
-        //se é o próximo nó da lista que tem que ser removido
-        if(p != this->last_node){
-            if(p->getNextNode()->getId() == id){
-                cout<<"teste1"<<endl;
-                Node *aux_node = p;
-                p = p->getNextNode();
-                aux_node->setNextNode(p->getNextNode());
-                //se é para remover o ultimo nó, atualiza o ultimo nó
-                if(p == this->last_node){
-                    this->last_node = aux_node;
+    if(this->first_node != nullptr){
+        for(Node *p = this->first_node; p !=nullptr; p = p->getNextNode()){
+            //se é para remover o primeiro nó
+            if(p->getId() == id && p == this->first_node){
+                if(!this->getDirected()){
+                   for(Edge* edge = p->getFirstEdge();edge != nullptr; edge = edge->getNextEdge()){
+                        Node* aux_node = this->getNode(edge->getTargetId());
+                        aux_node->removeEdge(p->getId( ), this->getDirected(), p);
+                    } 
                 }
-                cout<<"teste2"<<endl;
+                this->first_node = p->getNextNode();
                 p->removeAllEdges();
-                cout<<"teste3"<<endl;
                 delete p;
-                cout<<"testeFinal"<<endl;
+                this->order--;
                 break;
             }
+
+            //se é o próximo nó da lista que tem que ser removido
+            if(p != this->last_node){
+                if(p->getNextNode()->getId() == id){
+                    Node *aux_node = p;
+                    p = p->getNextNode();
+                    aux_node->setNextNode(p->getNextNode());
+                    //se é para remover o ultimo nó, atualiza o ultimo nó
+                    if(p == this->last_node){
+                        this->last_node = aux_node;
+                    }
+
+                    if(!this->getDirected()){
+                        for(Edge* edge = p->getFirstEdge();edge != nullptr; edge = edge->getNextEdge()){
+                            Node* aux_node = this->getNode(edge->getTargetId());
+                            aux_node->removeEdge(p->getId( ), this->getDirected(), p);
+                        } 
+                    }
+                    p->removeAllEdges();
+                    delete p;
+                    this->order--;
+                    break;
+                }
+            }
+            
         }
-        
     }
-    */
 }
 
 bool Graph::searchNode(int id)
