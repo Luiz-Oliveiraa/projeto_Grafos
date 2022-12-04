@@ -16,6 +16,7 @@ class Node{
         Edge* first_edge;
         Edge* last_edge;
         int id;
+        int label;
         unsigned int in_degree;
         unsigned int out_degree;
         float weight;
@@ -23,13 +24,14 @@ class Node{
 
     public:
         // Constructor
-        Node(int id);
+        Node(int id, int label);
         // Destructor
         ~Node();
         // Getters
         Edge* getFirstEdge();
         Edge* getLastEdge();
         int getId();
+        int getLabel();
         int getInDegree();
         int getOutDegree();
         float getWeight();
@@ -38,6 +40,7 @@ class Node{
         void setNextNode(Node* node);
         void setWeight(float weight);
         void setId(int id);
+        void setLabel(int label);
         // Other methods
         bool searchEdge(int target_id);
         void insertEdge(int target_id, float weight);
