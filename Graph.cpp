@@ -184,6 +184,7 @@ void Graph::insertEdgeAndNodeWeight(int id, int target_id, float edgeWeight, flo
     Node*p = this->getNodeForced(id, nodeSourceWeight); //cria nó1
     p->insertEdge(target_id, edgeWeight);
     p->incrementOutDegree();
+    this->number_edges +=1;
 
     Node *p2 = this->getNodeForced(target_id, nodeTargetWeight); //cria nó2
     p2->incrementInDegree();
@@ -197,7 +198,6 @@ void Graph::insertEdgeAndNodeWeight(int id, int target_id, float edgeWeight, flo
 }
 
 void Graph::removeNode(int id){ 
-    //corrigir bug
     if(this->first_node != nullptr){
         for(Node *p = this->first_node; p !=nullptr; p = p->getNextNode()){
             //se é para remover o primeiro nó

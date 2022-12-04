@@ -152,48 +152,44 @@ void saida(ofstream& output_file, Graph* graph){
 
         output_file << endl;
         if(!graph->getDirected()){
-            if(!graph->getWeightedNode()){
-                //estrutura auxiliar para diferenciar arestas repetidas de multiarestas
-                int num_multiarestas[graph->getNumberEdges()] = {0};
-                int nodeSource[graph->getNumberEdges()];
-                int nodeTarget[graph->getNumberEdges()];
+            //estrutura auxiliar para diferenciar arestas repetidas de multiarestas
+            int num_multiarestas[graph->getNumberEdges()] = {0};
+            int nodeSource[graph->getNumberEdges()];
+            int nodeTarget[graph->getNumberEdges()];
 
-                for(Node* p = graph->getFirstNode(); p!=nullptr; p = p->getNextNode()){
-                    for(Edge* edge = p->getFirstEdge(); edge != nullptr; edge = edge->getNextEdge()){
+            for(Node* p = graph->getFirstNode(); p!=nullptr; p = p->getNextNode()){
+                for(Edge* edge = p->getFirstEdge(); edge != nullptr; edge = edge->getNextEdge()){
 
-                        int nodeA = p->getId(), nodeB = edge->getTargetId();
-                        bool imprime = false;
+                    int nodeA = p->getId(), nodeB = edge->getTargetId();
+                    bool imprime = false;
 
-                        for(int i=0;i<graph->getNumberEdges();i++, imprime = false){
-                            if(num_multiarestas[i] == 0){
-                                nodeSource[i] = nodeA;
-                                nodeTarget[i] = nodeB;
+                    for(int i=0;i<graph->getNumberEdges();i++, imprime = false){
+                        if(num_multiarestas[i] == 0){
+                            nodeSource[i] = nodeA;
+                            nodeTarget[i] = nodeB;
+                            num_multiarestas[i]++;
+                            imprime = true;
+                        }else{
+                            if(nodeSource[i] == nodeA && nodeTarget[i] == nodeB){
                                 num_multiarestas[i]++;
                                 imprime = true;
-                            }else{
-                                if(nodeSource[i] == nodeA && nodeTarget[i] == nodeB){
-                                    num_multiarestas[i]++;
-                                    imprime = true;
-                                }else if(nodeTarget[i] == nodeA && nodeSource[i] == nodeB){
-                                    imprime = false;
-                                    break;
-                                }
-                            }
-                            if(imprime){
-                                output_file << "\t" << p->getLabel() << " -- " << graph->getNode(edge->getTargetId())->getLabel() << endl;
+                            }else if(nodeTarget[i] == nodeA && nodeSource[i] == nodeB){
+                                imprime = false;
                                 break;
                             }
                         }
+                        if(imprime){
+                            if(graph->getWeightedEdge()){
+                                output_file << "\t" << p->getLabel() << " -- " << graph->getNode(edge->getTargetId())->getLabel();
+                                output_file << "[label=\"" << edge->getWeight() << "\"]" << endl;
+                            }else{
+                                output_file << "\t" << p->getLabel() << " -- " << graph->getNode(edge->getTargetId())->getLabel() << endl;
+                            }
+                            break;
+                        }
                     }
                 }
-            }else{
-                for(Node* p = graph->getFirstNode(); p!=nullptr; p = p->getNextNode()){
-                    for(Edge* edge = p->getFirstEdge(); edge != nullptr; edge = edge->getNextEdge()){
-                        output_file << "\t" << p->getLabel() << " -- " << graph->getNode(edge->getTargetId())->getLabel();
-                        output_file << "[label=\"" << edge->getWeight() << "\"]" << endl;
-                    }
-                }
-            }    
+            } 
         }else{
             for(Node* p = graph->getFirstNode(); p!=nullptr; p = p->getNextNode()){
                 for(Edge* edge = p->getFirstEdge(); edge != nullptr; edge = edge->getNextEdge()){
