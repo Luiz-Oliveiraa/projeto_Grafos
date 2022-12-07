@@ -311,7 +311,13 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
         //Grafo Interseção
         case 11:
         {
-            
+            string str;
+            cout << "--------Grafo Interseção--------" << endl;
+            cout << "Digite o próximo grafo que fará Interseção: ";
+            cin >> str;
+            Graph* graph3 = new Graph(0, false, false, false);
+            //graph3->graphIntersection(graph2);
+            graph3->imprimeGrafo();
             break;
 
         }
