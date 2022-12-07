@@ -352,6 +352,33 @@ Graph* Graph::getSubjacent(){
     }
     return novo_grafo;
 }
+
+Graph* Graph::graphIntersection(Graph* graph2){
+    Graph* novo_grafo = new Graph(0, false, false, false);
+    Node* p = this->first_node;
+    Node* k = graph2->first_node;
+    Node* t = NULL;
+    Edge* e = p->getFirstEdge();
+    Edge* f = k->getFirstEdge();
+    novo_grafo->order = 0;
+    novo_grafo->number_edges = 0;
+    for(p = this->first_node, e = p->getFirstEdge(); p != nullptr, e != nullptr; p = p->getNextNode(), e = e->getNextEdge()){
+        for(k = graph2->first_node, f = k->getFirstEdge(); k != nullptr, f != nullptr; k = k->getNextNode(), f = f->getNextEdge()){
+            if(p->getLabel() == k->getLabel() && p->getWeight() == k->getWeight() && e->getTargetId() == f->getTargetId()){
+                novo_grafo->insertNode(p->getId(), p->getWeight());
+                novo_grafo->insertEdge(p->getId(), e->getTargetId(), e->getWeight());
+                if(novo_grafo->first_node == nullptr)
+                    novo_grafo->first_node = p;
+                novo_grafo->order++;
+                novo_grafo->number_edges++;
+                t = p;
+            }
+        }
+        novo_grafo->last_node = t;
+    }
+    return novo_grafo;
+}
+
 /*
 bool Graph::connectedGraph(){
     
