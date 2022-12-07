@@ -208,6 +208,50 @@ void saida(ofstream& output_file, Graph* graph){
             cout << "Não foi possivel abrir o arquivo de saida" << endl;
 }
 
+Graph* criaGrafo(){
+    cout << endl;
+    int selecao[3] = {-1};
+    
+    system("clear"); //apaga tudo que esta no terminal
+    cout << "Criando novo grafo..." << endl;
+    for (int i = 0; i < 3; i++)
+    {
+        int opcao = -1;
+        while(opcao != 0 && opcao != 1){
+            if(i == 0)
+                cout << "O grafo é ponderado?" << endl;
+            if(i == 1)
+                cout << "O grafo possuí arestas ponderados?" << endl;
+            if(i == 2)
+                cout << "O grafo possuí vértices ponderados?" << endl;
+            
+            cout << "[0] para NÃO" << endl << "[1] para SIM" << endl;
+            cin >>  opcao;
+            system("clear"); //apaga tudo que esta no terminal
+            cout << "Criando novo grafo..." << endl;
+        }
+        selecao[i] = opcao;
+    }
+
+    cout << "Digite o nome do arquivo de entrada. (exemplo: entrada2.txt)" << endl;
+    string name;
+    cin.get();
+    getline(cin, name);
+
+    ifstream input_file;
+    input_file.open(name, ios::in);
+
+    Graph* graph;
+
+    if(input_file.is_open()){
+        graph = leitura(input_file, selecao[0], selecao[1], selecao[2]);
+        return graph;
+    }else{
+        cout << "Unable to open " << name << endl;
+        exit(1);
+    }        
+}
+
 int menu(){
 
     int selecao;
@@ -233,6 +277,7 @@ int menu(){
     cout << "[15] Imprime Grafo" << endl;
     cout << "[16] Grafo Subjacente" << endl;
     cout << "[17] Existe caminho entre os 2 nós?" << endl;
+    cout << "[18] teste da função cria novo grafo (opcao provisoria)" << endl;
     cout << "[0] Sair" << endl;
 
     cin >> selecao;
@@ -372,6 +417,17 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
             else
                 cout << "EXISTE!(TRUE)" << endl;
             break;
+        }
+        case 18:{
+            //exemplo de criacao de grafo:
+            Graph* grafo2;
+            grafo2 = criaGrafo();
+
+            //se quiser adicionar na saida para gerar imagem:
+            saida(output_file, grafo2);
+
+            //não esquecer de desalocar o grafo
+            delete grafo2;
         }
   }
 }
