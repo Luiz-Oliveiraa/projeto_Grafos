@@ -245,6 +245,7 @@ Graph* criaGrafo(){
 
     if(input_file.is_open()){
         graph = leitura(input_file, selecao[0], selecao[1], selecao[2]);
+        input_file.close();
         return graph;
     }else{
         cout << "Unable to open " << name << endl;
