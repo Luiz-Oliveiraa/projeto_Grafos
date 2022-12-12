@@ -9,9 +9,10 @@ using namespace std;
 **************************************************************************************************/
 
 // Constructor
-Node::Node(int id){
+Node::Node(int id, int label){
 
     this->id = id;
+    this->label = label;
     this->in_degree = 0;
     this->out_degree = 0;
     this->weight = 0;
@@ -55,6 +56,12 @@ int Node::getId(){
 
 }
 
+int Node::getLabel(){
+
+    return this->label;
+
+}
+
 int Node::getInDegree(){
 
     return this->in_degree;
@@ -93,6 +100,14 @@ void Node::setWeight(float weight){
 
 }
 
+void Node::setId(int id){
+    this->id = id;
+}
+
+void Node::setLabel(int label){
+    this->label = label;
+}
+
 // Other methods
 void Node::insertEdge(int target_id, float weight){
     // Verifies whether there are at least one edge in the node
@@ -125,6 +140,7 @@ void Node::removeAllEdges(){
 
             next = aux->getNextEdge();
             delete aux;
+            aux = next;
 
         }
 
@@ -151,14 +167,19 @@ int Node::removeEdge(int id, bool directed, Node* target_node){
         if(previous != nullptr)
             previous->setNextEdge(aux->getNextEdge());
 
-        else
+        else{//se for a primeira aresta
             this->first_edge = aux->getNextEdge();
+        }      
 
-        if(aux == this->last_edge)
+        if(aux == this->last_edge){
             this->last_edge = previous;
+        }
+            
 
-        if(aux->getNextEdge() == this->last_edge)
+        if(aux->getNextEdge() == this->last_edge){
             this->last_edge = aux->getNextEdge();
+        }
+            
 
         delete aux;
         // Verifies whether the graph is directed
@@ -166,7 +187,6 @@ int Node::removeEdge(int id, bool directed, Node* target_node){
             this->decrementOutDegree();
 
         else{
-
             this->decrementInDegree();
             target_node->decrementInDegree();
 
