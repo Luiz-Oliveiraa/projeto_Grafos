@@ -359,11 +359,13 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
         {
             string str;
             cout << "--------Grafo Interseção--------" << endl;
-            cout << "Digite o próximo grafo que fará Interseção: ";
-            cin >> str;
+            Graph* graph2 = criaGrafo();
+            saida(output_file, graph2);
             Graph* graph3 = new Graph(0, false, false, false);
-            //graph3->graphIntersection(graph2);
-            graph3->imprimeGrafo();
+            graph3 = graph->graphIntersection(graph2);
+            graph->imprimeGrafo();
+            saida(output_file, graph3);
+            delete graph3;
             break;
 
         }

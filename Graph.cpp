@@ -303,21 +303,44 @@ Node *Graph::getNodeForced(int id, float weight)
 
 //Function that verifies if there is a path between two nodes
 bool Graph::depthFirstSearch(int initialId, int targetId){
-    Node* p = NULL;
-    return auxDepthFirstSearch(initialId, targetId, p);
+    Node* p = nullptr;
+    Edge* e = nullptr;
+    if(this->directed != true){
+        return auxDepthFirstSearch(initialId, targetId, p, e);
+    }
+    return false;
 }
 
-bool Graph::auxDepthFirstSearch(int initialId, int targetId, Node* p){
-    // encontra o nó inicial e depois não volta mais para essa verificão, se não voltaria sempre para o initialID
-    if(p == NULL){
+bool Graph::auxDepthFirstSearch(int initialId, int targetId, Node* p, Edge* e){
+    // encontra o nó inicial e depois não volta mais para essa verificão, se não voltaria sempre para o initialId
+    // como pular de uma conjunto conexo a outro que não está conexo ao principal
+    Node* v = nullptr;
+    if(p == nullptr){
         for(Node* q = this->first_node; q != nullptr; q = q->getNextNode()){
-            if(q->getId() == initialId)
+            // encontra o nó no conjunto principal do grafo
+            if(q->getLabel() == initialId)
                 p = q;
+            // encontra somente o nó final do caminho no grafo
+            else if(q->getLabel() == targetId)
+                v = q;
+            // não encontra nenhum no grafo principal (obs.: arrumar um jeito de pular de conjunto em conjunto)
+            else
+                p = nullptr;
         }
     }
-    if(p->getId() != targetId)
-        return auxDepthFirstSearch(initialId, targetId, p->getNextNode());
-    return true;
+    // nós em conjuntos diferentes
+    if(p == nullptr && v != nullptr){
+        return false;
+    }
+    // nós em conjuntos iguais
+    //muda de nó em nó
+    while( p->getNextNode() != nullptr ){
+        if( p->getLabel() == targetId){
+            return true;
+        }
+        p = p->getNextNode();
+    }
+    return false;
 }
 /*
 
@@ -357,20 +380,18 @@ Graph* Graph::graphIntersection(Graph* graph2){
     Graph* novo_grafo = new Graph(0, false, false, false);
     Node* p = this->first_node;
     Node* k = graph2->first_node;
-    Node* t = NULL;
-    Edge* e = p->getFirstEdge();
-    Edge* f = k->getFirstEdge();
+    Node* t = nullptr;
+    Edge* e = nullptr;
+    Edge* f = nullptr;
     novo_grafo->order = 0;
     novo_grafo->number_edges = 0;
     for(p = this->first_node, e = p->getFirstEdge(); p != nullptr, e != nullptr; p = p->getNextNode(), e = e->getNextEdge()){
         for(k = graph2->first_node, f = k->getFirstEdge(); k != nullptr, f != nullptr; k = k->getNextNode(), f = f->getNextEdge()){
-            if(p->getLabel() == k->getLabel() && p->getWeight() == k->getWeight() && e->getTargetId() == f->getTargetId()){
-                novo_grafo->insertNode(p->getId(), p->getWeight());
-                novo_grafo->insertEdge(p->getId(), e->getTargetId(), e->getWeight());
+            if(p->getLabel() == k->getLabel() /*&& p->getWeight() == k->getWeight()*/ && e->getTargetId() == f->getTargetId()){
+                novo_grafo->insertNode(p->getLabel(), p->getWeight());
+                novo_grafo->insertEdge(p->getLabel(), e->getTargetId(), e->getWeight());
                 if(novo_grafo->first_node == nullptr)
                     novo_grafo->first_node = p;
-                novo_grafo->order++;
-                novo_grafo->number_edges++;
                 t = p;
             }
         }
