@@ -1,4 +1,24 @@
 graph grafo{
+	0[label="1"]
+	1[label="2"]
+	2[label="3"]
+	3[label="4"]
+	4[label="5"]
+
+	0 -- 1
+	0 -- 2
+	0 -- 3
+	1 -- 4
+	3 -- 4
+
+}
+graph grafo{
+
+
+}
+
+
+graph grafo{
 	0[label="0"]
 	1[label="1"]
 	2[label="2"]
@@ -23,4 +43,3 @@ graph grafo{
 	6 -- 7
 
 }
-
