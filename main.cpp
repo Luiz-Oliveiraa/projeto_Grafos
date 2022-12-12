@@ -373,9 +373,13 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
         //Grafo União
         case 12:
         {
-            
-            break;
-
+            cout << "--------Grafo União--------" << endl;
+            Graph *graph2 = criaGrafo();
+            saida(output_file, graph2);
+            Graph *graph3 = new Graph(0, false, false, false);
+            saida(output_file, graph3);
+            delete graph3;
+            break;   
         }
 
         //Grafo Diferença
