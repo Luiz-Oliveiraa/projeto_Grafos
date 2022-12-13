@@ -55,6 +55,7 @@ class Graph{
         float** floydMarshall();
         float* dijkstra(int id);
         Graph* graphIntersection(Graph* graph2);
+        Graph* graphUnion(Graph* graph2);
         //auxiliar
         bool auxDepthFirstSearch(int initialId, int targetId, Node* p, Edge* e);
 
