@@ -366,6 +366,7 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
             graph->imprimeGrafo();
             saida(output_file, graph3);
             delete graph3;
+            delete graph2;
             break;
 
         }
@@ -380,6 +381,7 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
             graph3 = graph->graphUnion(graph2);
             saida(output_file, graph3);
             delete graph3;
+            delete graph2;
             break;   
         }
 
