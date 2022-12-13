@@ -399,7 +399,31 @@ Graph* Graph::graphIntersection(Graph* graph2){
     }
     return novo_grafo;
 }
+Graph* Graph::graphUnion(Graph* graph2)
+{
+    Graph* graph_union = new Graph(0, false, false, false);
 
+    Node* node_f_graph;
+    Edge* edge_f_graph;
+
+    graph_union->order = 0;
+    graph_union->number_edges = 0;
+
+    // copia um grafo para o novo grafo
+    // quase funcionando. ERRO: está dobrando o número de arestas e não está copiando os nós isolados.
+    for(node_f_graph = this->first_node; node_f_graph != nullptr; node_f_graph = node_f_graph->getNextNode())
+    {
+        for(edge_f_graph = node_f_graph->getFirstEdge(); edge_f_graph != nullptr; edge_f_graph = edge_f_graph->getNextEdge())
+        {
+            graph_union->insertNode(node_f_graph->getId(), node_f_graph->getWeight());
+            graph_union->insertEdge(node_f_graph->getId(), edge_f_graph->getTargetId(), edge_f_graph->getWeight());
+        }
+    }
+    graph_union->last_node = node_f_graph;
+    // percorrer o graph2 e adicionar no graph_union somente os nós que são diferentes do graph
+
+    return graph_union;
+}
 /*
 bool Graph::connectedGraph(){
     
