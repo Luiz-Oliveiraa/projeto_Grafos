@@ -383,20 +383,90 @@ Graph* Graph::graphIntersection(Graph* graph2){
     Node* t = nullptr;
     Edge* e = nullptr;
     Edge* f = nullptr;
+    Edge* d = nullptr;
     novo_grafo->order = 0;
     novo_grafo->number_edges = 0;
-    for(p = this->first_node, e = p->getFirstEdge(); p != nullptr, e != nullptr; p = p->getNextNode(), e = e->getNextEdge()){
-        for(k = graph2->first_node, f = k->getFirstEdge(); k != nullptr, f != nullptr; k = k->getNextNode(), f = f->getNextEdge()){
-            if(p->getLabel() == k->getLabel() /*&& p->getWeight() == k->getWeight()*/ && e->getTargetId() == f->getTargetId()){
-                novo_grafo->insertNode(p->getLabel(), p->getWeight());
-                novo_grafo->insertEdge(p->getLabel(), e->getTargetId(), e->getWeight());
-                if(novo_grafo->first_node == nullptr)
-                    novo_grafo->first_node = p;
-                t = p;
+
+    //--Primeiro inserimos todos os nos
+    int noSemAresta = 0;
+    for(p = this->first_node; p != nullptr;  p = p->getNextNode()){
+        for(k = graph2->first_node; k != nullptr; k = k->getNextNode()){
+            if(p->getId() == k->getId() && p->getWeight() == k->getWeight()){
+                if(p->getId() != -1){
+                    novo_grafo->insertNode(p->getId(), p->getWeight());
+                }
+                else{//se for um vetor sem id e sem arestas
+                    noSemAresta++;
+                    int cont = 0;
+                    Node* aux = k; //armazenando posição de k
+                    for( ; cont < noSemAresta && k != nullptr; k = k->getNextNode()){
+                        if(k->getId() == -1)
+                            cont++;
+                    }
+                    if(cont == noSemAresta && p->getWeight() == k->getWeight()){
+                        novo_grafo->order++;
+                        Node *auxNode = new Node(-1, novo_grafo->order);
+                        novo_grafo->last_node->setNextNode(auxNode);
+                        novo_grafo->last_node = auxNode;
+                    }
+                    k = aux; //restaurando posição de k
+                }
+                
             }
         }
-        novo_grafo->last_node = t;
     }
+        
+    //--Depois inserimos as arestas
+
+    for(t = novo_grafo->first_node; t != nullptr;  t = t->getNextNode()){
+        p = this->getNode(t->getId());
+        k = graph2->getNode(t->getId());
+        for(e = p->getFirstEdge(); e != nullptr; e = e->getNextEdge()){
+            for (f = k->getFirstEdge(); f != nullptr; f = f->getNextEdge())
+            {
+                if(e->getTargetId() == f->getTargetId() && e->getWeight() == f->getWeight()){
+
+                    //-------descobrir se tem como otimizar isso:
+                    d = t->hasEdgeBetween(e->getTargetId());
+                    //-------
+
+                    if(d == nullptr){//verifica se aresta ainda não foi colocado no vertice
+
+                        //verifica se tem multiarestas
+                        //-------descobrir se tem como otimizar isso:
+                        int multiArestaA = p->arestaRepete(e->getTargetId(), e->getWeight());
+                        int multiArestaB = k->arestaRepete(f->getTargetId(), f->getWeight());
+                        int multiarestas;
+                        //-------
+                        if(multiArestaA < multiArestaB)
+                            multiarestas = multiArestaA;
+                        else
+                            multiarestas = multiArestaB;
+                        
+                        for (int i = 0; i < multiarestas; i++)
+                        {
+                            novo_grafo->insertEdgeAndNodeWeight(t->getId(), e->getTargetId(), e->getWeight(),0,0);
+                        }
+                        
+                    }
+                }
+            }
+            
+        }
+    }
+    
+    //for(p = this->first_node, e = p->getFirstEdge(); p != nullptr, e != nullptr; p = p->getNextNode(), e = e->getNextEdge()){
+    //    for(k = graph2->first_node, f = k->getFirstEdge(); k != nullptr, f != nullptr; k = k->getNextNode(), f = f->getNextEdge()){
+    //        if(p->getLabel() == k->getLabel() /*&& p->getWeight() == k->getWeight()*/ && e->getTargetId() == f->getTargetId()){
+    //            novo_grafo->insertNode(p->getLabel(), p->getWeight());
+    //            novo_grafo->insertEdge(p->getLabel(), e->getTargetId(), e->getWeight());
+    //            if(novo_grafo->first_node == nullptr)
+    //                novo_grafo->first_node = p;
+    //            t = p;
+    //        }
+    //    }
+    //    novo_grafo->last_node = t;
+    //}
     return novo_grafo;
 }
 Graph* Graph::graphUnion(Graph* graph2)
