@@ -53,12 +53,12 @@ Graph::~Graph()
 void Graph::inicializaGrafo(){
     if(this->order > 0){
         //cria nó com id = -1, para indicar que o id não foi inicializado
-        Node *primeiro = new Node(-1, 0);
+        Node *primeiro = new Node(-1, 1);
         this->first_node = primeiro;
         this->last_node = primeiro;
         //cria nó com id = -1, no final da lista
         for(int i=1; i < this->order; i++){
-            Node *auxNode = new Node(-1, i);
+            Node *auxNode = new Node(-1, i+1);
             this->last_node->setNextNode(auxNode);
             this->last_node = auxNode;
         }  
@@ -133,14 +133,21 @@ void Graph::insertNode(int id, float weight)
     if(this->first_node != nullptr){
         for(Node *aux = this->first_node; aux !=nullptr; aux = aux->getNextNode()){
             //se o nó foi inicializado, porem não tem id, adiciono o id
-            if(aux->getId() == -1){
+            if(aux->getId() == -1 && aux->getId() != -1){
                 aux->setId(id);
                 aux->setWeight(weight);
                 break;
             }
             //se o nó já está no grafo, só insiro o peso
             if(aux->getId() == id){
-                aux->setWeight(weight);
+                if(id == -1){
+                    this->order++;
+                    Node *auxNode = new Node(-1, this->order);
+                    this->last_node->setNextNode(auxNode);
+                    this->last_node = auxNode;
+                }
+                else
+                    aux->setWeight(weight);
                 break;
             }
             //se o nó não está no grafo, insiro no final da lista
@@ -377,7 +384,7 @@ Graph* Graph::getSubjacent(){
 }
 
 Graph* Graph::graphIntersection(Graph* graph2){
-    Graph* novo_grafo = new Graph(0, false, false, false);
+    Graph* novo_grafo = new Graph(0, this->directed, this->getWeightedEdge(), this->getWeightedNode());
     Node* p = this->first_node;
     Node* k = graph2->first_node;
     Node* t = nullptr;
@@ -404,14 +411,12 @@ Graph* Graph::graphIntersection(Graph* graph2){
                             cont++;
                     }
                     if(cont == noSemAresta && p->getWeight() == k->getWeight()){
-                        novo_grafo->order++;
-                        Node *auxNode = new Node(-1, novo_grafo->order);
-                        novo_grafo->last_node->setNextNode(auxNode);
-                        novo_grafo->last_node = auxNode;
+                        cout << "AAAAA" << endl;
+                        novo_grafo->insertNode(p->getId(), p->getWeight());
                     }
                     k = aux; //restaurando posição de k
                 }
-                
+                break;
             }
         }
     }
