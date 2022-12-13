@@ -255,7 +255,6 @@ int Node::arestaRepete(int id, float weight){
     for(Edge* e = this->first_edge; e!=nullptr; e = e->getNextEdge()){
         if(e->getTargetId() == id && e->getWeight() == weight)
             cont++;
-        cout << "AQUIIVDCHKJHK" <<endl;
     }
     return cont;
 }
