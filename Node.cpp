@@ -248,3 +248,14 @@ Edge* Node::hasEdgeBetween(int target_id)
     }
     return nullptr;
 }
+
+//Retorna a quantidade de vezes que uma aresta repete
+int Node::arestaRepete(int id, float weight){
+    int cont = 0;
+    for(Edge* e = this->first_edge; e!=nullptr; e = e->getNextEdge()){
+        if(e->getTargetId() == id && e->getWeight() == weight)
+            cont++;
+        cout << "AQUIIVDCHKJHK" <<endl;
+    }
+    return cont;
+}
