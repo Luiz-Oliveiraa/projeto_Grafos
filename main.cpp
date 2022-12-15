@@ -67,8 +67,6 @@ Graph* leitura(ifstream& input_file, int directed, int weightedEdge, int weighte
             //se existe o segundo nó
             if(idNodeTarget!= -1){
                 graph->insertEdge(idNodeSource, idNodeTarget, 0); // criando aresta, como não é ponderada, enviamos 0
-                if(!graph->getDirected())
-                    graph->insertEdge(idNodeTarget, idNodeSource, 0); 
             }
             //se não existe o segundo nó
             else{
@@ -84,8 +82,6 @@ Graph* leitura(ifstream& input_file, int directed, int weightedEdge, int weighte
         while(input_file >> idNodeSource >> idNodeTarget >> edgeWeight) {
             if(idNodeTarget!= -1){
                 graph->insertEdge(idNodeSource, idNodeTarget, edgeWeight);//cria dois nos e a aresta
-                if(!graph->getDirected())
-                    graph->insertEdge(idNodeTarget, idNodeSource, edgeWeight); 
             }
             //se não existe o segundo nó
             else{
@@ -102,8 +98,6 @@ Graph* leitura(ifstream& input_file, int directed, int weightedEdge, int weighte
         while(input_file >> idNodeSource >> nodeSourceWeight >> idNodeTarget >> nodeTargetWeight) {
             if(idNodeTarget!= -1){
                 graph->insertEdgeAndNodeWeight(idNodeSource, idNodeTarget, 0, nodeSourceWeight, nodeTargetWeight);//cria dois nos e a aresta
-                if(!graph->getDirected())
-                    graph->insertEdgeAndNodeWeight(idNodeTarget, idNodeSource, 0, nodeTargetWeight, nodeSourceWeight); 
             }
             //se não existe o segundo nó
             else{
@@ -119,8 +113,6 @@ Graph* leitura(ifstream& input_file, int directed, int weightedEdge, int weighte
         while(input_file >> idNodeSource >> nodeSourceWeight >> idNodeTarget >> nodeTargetWeight >> edgeWeight) {
             if(idNodeTarget!= -1){
                 graph->insertEdgeAndNodeWeight(idNodeSource, idNodeTarget, edgeWeight, nodeSourceWeight, nodeTargetWeight);//cria dois nos e a aresta
-                if(!graph->getDirected())
-                    graph->insertEdgeAndNodeWeight(idNodeTarget, idNodeSource, edgeWeight, nodeTargetWeight, nodeSourceWeight); 
             }
             //se não existe o segundo nó
             else{
