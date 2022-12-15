@@ -394,7 +394,7 @@ Graph* Graph::graphIntersection(Graph* graph2){
             for (k = graph2->first_node; k != nullptr; k = k->getNextNode()) { 
                 if (p->getId() == k->getId()) { 
                     for(e = p->getFirstEdge();e != nullptr; e = e->getNextEdge()){ //inserindo no novo grafo as arestas do grafo 1 que não tem no grafo 2 
-                        bool diferente;
+                        bool diferente = true;
                         for(f = k->getFirstEdge();f != nullptr; f = f->getNextEdge()){
                             if(e->getTargetId() == f->getTargetId()) {
                                 diferente = false;
