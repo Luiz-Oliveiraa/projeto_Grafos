@@ -171,37 +171,23 @@ void Graph::insertNode(int id, float weight)
 }
 
 void Graph::insertEdge(int id, int target_id, float weight){
-    Node*p = this->getNodeForced(id, 0); //cria nó1
+    Node*p = this->getNodeForced(id, 0); //busca ou cria nó1, caso não exista
     p->insertEdge(target_id, weight);
     p->incrementOutDegree();
     this->number_edges +=1;
 
-    Node *p2 = this->getNodeForced(target_id, 0); //cria nó2
+    Node *p2 = this->getNodeForced(target_id, 0); //busca ou cria nó2, caso não exista
     p2->incrementInDegree();
-
-    // se não for uma lista direcionada, adiciona a aresta na lista do nó2
-    if(!this->getDirected()){
-        p2->insertEdge(id, weight);
-        p2->incrementOutDegree();
-        p->incrementInDegree();
-    }
 }
 
 void Graph::insertEdgeAndNodeWeight(int id, int target_id, float edgeWeight, float nodeSourceWeight, float nodeTargetWeight){
-    Node*p = this->getNodeForced(id, nodeSourceWeight); //cria nó1
+    Node*p = this->getNodeForced(id, nodeSourceWeight); //busca ou cria nó1, caso não exista
     p->insertEdge(target_id, edgeWeight);
     p->incrementOutDegree();
     this->number_edges +=1;
 
-    Node *p2 = this->getNodeForced(target_id, nodeTargetWeight); //cria nó2
+    Node *p2 = this->getNodeForced(target_id, nodeTargetWeight); //busca ou cria nó2, caso não exista
     p2->incrementInDegree();
-
-    // se não for uma lista direcionada, adiciona a aresta na lista do nó2
-    if(!this->getDirected()){
-        p2->insertEdge(id, edgeWeight);
-        p2->incrementOutDegree();
-        p->incrementInDegree();
-    }
 }
 
 void Graph::removeNode(int id){ 
