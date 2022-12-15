@@ -393,9 +393,9 @@ Graph* Graph::graphIntersection(Graph* graph2){
             novo_grafo->insertNode(p->getId(), p->getWeight());
             for (k = graph2->first_node; k != nullptr; k = k->getNextNode()) { 
                 if (p->getId() == k->getId()) { 
-                    for(e = p->getFirstEdge();e != nullptr; e = e->getNextEdge()){ //inserindo no novo grafo as arestas do grafo 1 que não tem no grafo 2 
-                        bool diferente;
-                        for(f = k->getFirstEdge();f != nullptr; f = f->getNextEdge()){
+                    for(e = p->getFirstEdge();e != nullptr; e = e->getNextEdge()){ //inserindo no novo grafo as arestas do grafo 1 que não tem no grafo 2
+                        bool diferente = true;
+                        for(f = k->getFirstEdge();f != nullptr; f = f->getNextEdge()){ //checando se a aresta também se encontra no grafo 2
                             if(e->getTargetId() == f->getTargetId()) {
                                 diferente = false;
                                 break;
@@ -403,7 +403,7 @@ Graph* Graph::graphIntersection(Graph* graph2){
                             else diferente = true;
                         }
                         Node* aux = novo_grafo->getNode(p->getId());
-                        if (diferente) { //se for diferente  inserir a aresta
+                        if (diferente) {   //se for diferente  inserir a aresta 
                             aux->insertEdge(e->getTargetId(), e->getWeight());
                             novo_grafo->number_edges++;
                         }
