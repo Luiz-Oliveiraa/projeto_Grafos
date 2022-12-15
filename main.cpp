@@ -388,7 +388,15 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
         //Grafo Diferença
         case 13:
         {
-            
+            cout << "--------Grafo Diferença--------" << endl;
+            Graph* graph2 = criaGrafo();
+            saida(output_file, graph2);
+            Graph* graph3 = new Graph(0, false, false, false);
+            graph3 = graph->graphDiference(graph2);
+            graph3->imprimeGrafo();
+            saida(output_file, graph3);
+            delete graph3;
+            delete graph2;
             break;
 
         }

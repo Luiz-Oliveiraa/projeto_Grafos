@@ -56,8 +56,9 @@ class Graph{
         float* dijkstra(int id);
         Graph* graphIntersection(Graph* graph2);
         Graph* graphUnion(Graph* graph2);
+        Graph* graphDiference(Graph* graph2);
         //auxiliar
-        bool auxDepthFirstSearch(int initialId, int targetId, Node* p, Edge* e);
+        bool auxDepthFirstSearch(int initialId, int targetId, Node* p);
 
     private:
         //Auxiliar methods
