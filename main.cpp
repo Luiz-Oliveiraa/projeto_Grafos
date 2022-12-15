@@ -18,18 +18,24 @@ Autores:
 Thiago Silva Murta
 Luiz Oliveira
 André Dutra
+Matheus Peron
+
 Comandos ara executar o programa no terminal:
 Windows:
 g++ Edge.cpp Node.cpp Graph.cpp main.cpp -o execGrupo6
 .\execGrupo6.exe entrada.txt saida.txt 0 0 0
 Linux:
 g++ Edge.cpp Node.cpp Graph.cpp main.cpp -o execGrupo6
-./execGrupo6.exe entrada.txt saida.txt 0 0 0
+./execGrupo6 entrada.txt saida.dot 0 0 0
+
+Para gerar imagem, a saida tem que ser .dot
+depois de executar o programa, no terminal digite:
+dot -Tpng -O saida.dot
 
 Parâmetros:
 executavel,
 nome_da_entrada.txt,
-nome_da_saida.txt,
+nome_da_saida.dot,
 booleano se é um grafo direcionado,
 booleano se tem aresta ponderado,
 booleano se tem vertice ponderado
@@ -58,75 +64,193 @@ Graph* leitura(ifstream& input_file, int directed, int weightedEdge, int weighte
     if(!graph->getWeightedEdge() && !graph->getWeightedNode()){
 
         while(input_file >> idNodeSource >> idNodeTarget) { // lendo uma linha da entrada.txt e pegando a aresta (2 vertices)
- 
-            graph->insertEdge(idNodeSource, idNodeTarget, 0); // criando aresta, como não é ponderada, enviamos 0
-
+            //se existe o segundo nó
+            if(idNodeTarget!= -1){
+                graph->insertEdge(idNodeSource, idNodeTarget, 0); // criando aresta, como não é ponderada, enviamos 0
+            }
+            //se não existe o segundo nó
+            else{
+                graph->insertNode(idNodeSource, 0); //cria apenas o nó
+            }
         }
+
     //aresta ponderada e vertice não ponderado
     }else if(graph->getWeightedEdge() && !graph->getWeightedNode() ){
 
         float edgeWeight;
 
         while(input_file >> idNodeSource >> idNodeTarget >> edgeWeight) {
-
-            graph->insertEdge(idNodeSource, idNodeTarget, edgeWeight);
+            if(idNodeTarget!= -1){
+                graph->insertEdge(idNodeSource, idNodeTarget, edgeWeight);//cria dois nos e a aresta
+            }
+            //se não existe o segundo nó
+            else{
+                graph->insertNode(idNodeSource, 0); //cria apenas o nó
+            }
 
         }
+
     //nó ponderado e aresta não ponderada:
     }else if(graph->getWeightedNode() && !graph->getWeightedEdge()){
 
         float nodeSourceWeight, nodeTargetWeight;
 
         while(input_file >> idNodeSource >> nodeSourceWeight >> idNodeTarget >> nodeTargetWeight) {
-
-            graph->insertEdge(idNodeSource, idNodeTarget, 0);
-            graph->getNode(idNodeSource)->setWeight(nodeSourceWeight);
-            graph->getNode(idNodeTarget)->setWeight(nodeTargetWeight);
-
+            if(idNodeTarget!= -1){
+                graph->insertEdgeAndNodeWeight(idNodeSource, idNodeTarget, 0, nodeSourceWeight, nodeTargetWeight);//cria dois nos e a aresta
+            }
+            //se não existe o segundo nó
+            else{
+                graph->insertNode(idNodeSource, nodeSourceWeight); //cria apenas o nó
+            }
         }
+
     //nó ponderado e aresta ponderada
     }else if(graph->getWeightedNode() && graph->getWeightedEdge()){
 
         float nodeSourceWeight, nodeTargetWeight, edgeWeight;
 
         while(input_file >> idNodeSource >> nodeSourceWeight >> idNodeTarget >> nodeTargetWeight >> edgeWeight) {
-
-            graph->insertEdge(idNodeSource, idNodeTarget, edgeWeight);
-            graph->getNode(idNodeSource)->setWeight(nodeSourceWeight);
-            graph->getNode(idNodeTarget)->setWeight(nodeTargetWeight);
-
+            if(idNodeTarget!= -1){
+                graph->insertEdgeAndNodeWeight(idNodeSource, idNodeTarget, edgeWeight, nodeSourceWeight, nodeTargetWeight);//cria dois nos e a aresta
+            }
+            //se não existe o segundo nó
+            else{
+                graph->insertNode(idNodeSource, nodeSourceWeight); //cria apenas o nó
+            }
         }
-
     }
 
     return graph;
 }
 
-Graph* leituraInstancia(ifstream& input_file, int directed, int weightedEdge, int weightedNode){
 
-    //Variáveis para auxiliar na criação dos nós no Grafo
-    int idNodeSource;
-    int idNodeTarget;
-    int order;
-    int numEdges;
+//pode escrever varios grafos na mesma saida; para gerar imagem, a saida tem que ser .dot
+void saida(ofstream& output_file, Graph* graph){
+    if(output_file.is_open()){
+        if(!graph->getDirected())
+            output_file << "graph grafo{" << endl;
+        else
+            output_file << "digraph grafo{" << endl;
 
-    //Pegando a ordem do grafo e o numero de arestas na primeira linha
-    //input_file >> order >> numEdges;
+        //-----Personalizar layout (circo, dot, fdp, neato, osage, patchwork, sfdp, twopi)
+        //output_file << "\tlayout = circo;" << endl;
+        //output_file << "\tnode [style = filled, color = yellow]" << endl; //personalizar nó
+        //output_file << "\tedge [color = red]" << endl << endl; //personalizar aresta
+        
+        if(graph->getWeightedNode()){
+            for(Node* p = graph->getFirstNode(); p!=nullptr; p = p->getNextNode()){
+                output_file << "\t" << p->getLabel() << "[label=\"" << p->getId() << "| p:" << p->getWeight() << "\"]" << endl;
+            }
+        }else{
+            for(Node* p = graph->getFirstNode(); p!=nullptr; p = p->getNextNode()){
+                output_file << "\t" << p->getLabel() << "[label=\"" << p->getId() << "\"]" << endl;
+            }
+        }
 
-    //Pegando a ordem do grafo na primeira linha
-    input_file >> order;
+        output_file << endl;
+        if(!graph->getDirected()){
+            //estrutura auxiliar para diferenciar arestas repetidas de multiarestas
+            int num_multiarestas[graph->getNumberEdges()] = {0};
+            int nodeSource[graph->getNumberEdges()];
+            int nodeTarget[graph->getNumberEdges()];
 
-    //Criando objeto grafo
-    Graph* graph = new Graph(order, directed, weightedEdge, weightedNode);
+            for(Node* p = graph->getFirstNode(); p!=nullptr; p = p->getNextNode()){
+                for(Edge* edge = p->getFirstEdge(); edge != nullptr; edge = edge->getNextEdge()){
 
-    //Leitura de arquivo
-    while(input_file >> idNodeSource >> idNodeTarget) {
+                    int nodeA = p->getId(), nodeB = edge->getTargetId();
+                    bool imprime = false;
 
-        graph->insertEdge(idNodeSource, idNodeTarget, 0);
-
+                    for(int i=0;i<graph->getNumberEdges();i++, imprime = false){
+                        if(num_multiarestas[i] == 0){
+                            nodeSource[i] = nodeA;
+                            nodeTarget[i] = nodeB;
+                            num_multiarestas[i]++;
+                            imprime = true;
+                        }else{
+                            if(nodeSource[i] == nodeA && nodeTarget[i] == nodeB){
+                                num_multiarestas[i]++;
+                                imprime = true;
+                            }else if(nodeTarget[i] == nodeA && nodeSource[i] == nodeB){
+                                imprime = false;
+                                break;
+                            }
+                        }
+                        if(imprime){
+                            if(graph->getWeightedEdge()){
+                                output_file << "\t" << p->getLabel() << " -- " << graph->getNode(edge->getTargetId())->getLabel();
+                                output_file << "[label=\"" << edge->getWeight() << "\"]" << endl;
+                            }else{
+                                output_file << "\t" << p->getLabel() << " -- " << graph->getNode(edge->getTargetId())->getLabel() << endl;
+                            }
+                            break;
+                        }
+                    }
+                }
+            } 
+        }else{
+            for(Node* p = graph->getFirstNode(); p!=nullptr; p = p->getNextNode()){
+                for(Edge* edge = p->getFirstEdge(); edge != nullptr; edge = edge->getNextEdge()){
+                    if(graph->getWeightedEdge()){
+                        output_file << "\t" << p->getLabel() << " -> " << graph->getNode(edge->getTargetId())->getLabel();
+                        output_file << "[label=\"" << edge->getWeight() << "\"]" << endl;
+                    }else{
+                        output_file << "\t" << p->getLabel() << " -> " << graph->getNode(edge->getTargetId())->getLabel() << endl;
+                    }
+                }
+            }
+        }
+        
+        output_file << endl << "}" << endl;
     }
 
-    return graph;
+     else
+            cout << "Não foi possivel abrir o arquivo de saida" << endl;
+}
+
+Graph* criaGrafo(){
+    cout << endl;
+    int selecao[3] = {-1};
+    
+    system("clear"); //apaga tudo que esta no terminal
+    cout << "Criando novo grafo..." << endl;
+    for (int i = 0; i < 3; i++)
+    {
+        int opcao = -1;
+        while(opcao != 0 && opcao != 1){
+            if(i == 0)
+                cout << "O grafo é ponderado?" << endl;
+            if(i == 1)
+                cout << "O grafo possuí arestas ponderados?" << endl;
+            if(i == 2)
+                cout << "O grafo possuí vértices ponderados?" << endl;
+            
+            cout << "[0] para NÃO" << endl << "[1] para SIM" << endl;
+            cin >>  opcao;
+            system("clear"); //apaga tudo que esta no terminal
+            cout << "Criando novo grafo..." << endl;
+        }
+        selecao[i] = opcao;
+    }
+
+    cout << "Digite o nome do arquivo de entrada. (exemplo: entrada2.txt)" << endl;
+    string name;
+    cin.get();
+    getline(cin, name);
+
+    ifstream input_file;
+    input_file.open(name, ios::in);
+
+    Graph* graph;
+
+    if(input_file.is_open()){
+        graph = leitura(input_file, selecao[0], selecao[1], selecao[2]);
+        input_file.close();
+        return graph;
+    }else{
+        cout << "Unable to open " << name << endl;
+        exit(1);
+    }        
 }
 
 int menu(){
@@ -150,6 +274,11 @@ int menu(){
     cout << "[12] Grafo União" << endl;
     cout << "[13] Grafo Diferença" << endl;
     cout << "[14] Rede Pert" << endl;
+    cout << "Funcionalidades Auxiliares" << endl;
+    cout << "[15] Imprime Grafo" << endl;
+    cout << "[16] Grafo Subjacente" << endl;
+    cout << "[17] Existe caminho entre os 2 nós?" << endl;
+    cout << "[18] teste da função cria novo grafo (opcao provisoria)" << endl;
     cout << "[0] Sair" << endl;
 
     cin >> selecao;
@@ -228,7 +357,16 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
         //Grafo Interseção
         case 11:
         {
-            
+            string str;
+            cout << "--------Grafo Interseção--------" << endl;
+            Graph* graph2 = criaGrafo();
+            saida(output_file, graph2);
+            Graph* graph3 = new Graph(0, false, false, false);
+            graph3 = graph->graphIntersection(graph2);
+            graph->imprimeGrafo();
+            saida(output_file, graph3);
+            delete graph3;
+            delete graph2;
             break;
 
         }
@@ -236,15 +374,29 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
         //Grafo União
         case 12:
         {
-            
-            break;
-
+            cout << "--------Grafo União--------" << endl;
+            Graph *graph2 = criaGrafo();
+            saida(output_file, graph2);
+            Graph *graph3 = new Graph(0, false, false, false);
+            graph3 = graph->graphUnion(graph2);
+            saida(output_file, graph3);
+            delete graph3;
+            delete graph2;
+            break;   
         }
 
         //Grafo Diferença
         case 13:
         {
-            
+            cout << "--------Grafo Diferença--------" << endl;
+            Graph* graph2 = criaGrafo();
+            saida(output_file, graph2);
+            Graph* graph3 = new Graph(0, false, false, false);
+            graph3 = graph->graphDiference(graph2);
+            graph3->imprimeGrafo();
+            saida(output_file, graph3);
+            delete graph3;
+            delete graph2;
             break;
 
         }
@@ -257,6 +409,44 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
 
         }
 
+        //imprime Grafo
+        case 15:
+        {
+            cout << "primeiro noh: " << graph->getFirstNode()->getId() <<" | ultimo noh: " << graph->getLastNode()->getId();
+            graph->imprimeGrafo();
+            //system("pause");
+            break;
+        }
+        //
+        case 16:{
+            Graph* novo = new Graph(0, false, false, false);
+            cout << "-Grafo Subjacente-" << endl;
+            novo->getSubjacent();
+            novo->imprimeGrafo();
+            break;
+        }
+        case 17:{
+            cout << "-Caminho entre 2 nós-" << endl;
+            cout << "Gostaria de verificar se existe um caminho entre os nós: " << endl;
+            int no1, no2;
+            cin >> no1 >> no2;
+            if(!graph->depthFirstSearch(no1, no2))
+                cout << "NÃO EXISTE!(FALSE)" << endl;
+            else
+                cout << "EXISTE!(TRUE)" << endl;
+            break;
+        }
+        case 18:{
+            //exemplo de criacao de grafo:
+            Graph* grafo2;
+            grafo2 = criaGrafo();
+
+            //se quiser adicionar na saida para gerar imagem:
+            saida(output_file, grafo2);
+
+            //não esquecer de desalocar o grafo
+            delete grafo2;
+        }
   }
 }
 
@@ -265,7 +455,7 @@ int mainMenu(ofstream& output_file, Graph* graph){
     int selecao = 1;
 
     while(selecao != 0){
-        system("clear");
+        //system("clear");
         selecao = menu();
 
         if(output_file.is_open())
@@ -277,7 +467,12 @@ int mainMenu(ofstream& output_file, Graph* graph){
         output_file << endl;
 
     }
-
+    if(selecao == 0){
+        saida(output_file, graph);
+        system("dot -Tpng -O saida.dot");
+        return 0;
+    }
+        
     return 0;
 }
 
@@ -327,7 +522,6 @@ int main(int argc, char const *argv[]) {
     //Fechando arquivo de saída
     output_file.close();
 
-    //chamando o destrutor para desencadear a memoria
     delete graph;
 
     return 0;
