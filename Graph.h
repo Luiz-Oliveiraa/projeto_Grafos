@@ -63,6 +63,7 @@ class Graph{
     private:
         //Auxiliar methods
         void inicializaGrafo();
+        bool verificaAresta(Graph* g, Node *p, int targetid);
 
 };
 
