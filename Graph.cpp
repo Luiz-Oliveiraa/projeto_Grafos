@@ -418,9 +418,60 @@ Graph* Graph::graphIntersection(Graph* graph2){
         exit(1);
     }
  }
- Graph* Graph::graphUnion(Graph* graph2){
-    Graph* novo_grafo = new Graph(0, false, false, false);
-    return novo_grafo;
+bool Graph::verificaAresta(Graph* g, Node *p, int targetid) // função auxiliar para verificar se já existe a aresta no grafo
+{
+    Node *aux;
+    for(aux = g->first_node; aux != nullptr; aux = aux->getNextNode())
+    {
+        if(aux->getId() == p->getId())
+            break;
+    } 
+    return aux->searchEdge(targetid);
+}
+
+Graph* Graph::graphUnion(Graph* graph2)
+{
+    Graph* graph_union = new Graph(0, false, false, false);
+    Node* n = this->first_node; // aponta para os vértices do primeiro grafo
+    Edge* e = n->getFirstEdge(); // aponta para as arestas do primeiro grafo
+    Node* p = graph2->first_node; // aponta para os vértices do segundo grafo
+    Edge* k = p->getFirstEdge(); // aponta para as arestas do segundo grafo
+    graph_union->order = 0;
+    graph_union->number_edges = 0;
+    for(n = this->first_node; n != nullptr; n = n->getNextNode()) 
+    {
+        graph_union->insertNode(n->getId(), n->getWeight()); // inserindo todos os vértices do primeiro grafo
+        
+        for(e = n->getFirstEdge(); e != nullptr; e = e->getNextEdge()) 
+        {           
+            Node* aux = graph_union->getNode(n->getId());
+            if(n->getId() != -1 || n->getFirstEdge() != nullptr)
+            {
+                    aux->insertEdge(e->getTargetId(), e->getWeight()); // inserindo todas as arestas do primeiro grafo
+                    graph_union->number_edges++;                
+            }                                             
+        }      
+    }   
+    for(p = graph2->first_node ; p != nullptr; p = p->getNextNode()) 
+    {
+        graph_union->insertNode(p->getId(), p->getWeight()); // inserindo todos os vértices do segundo grafo que não estão no primeiro grafo
+        
+        for(k = p->getFirstEdge(); k != nullptr; k = k->getNextEdge())
+        {
+            Node* aux = graph_union->getNode(p->getId());
+            if(p->getId() != -1 || p->getFirstEdge() != nullptr)
+            {
+                if(!verificaAresta(graph_union, p, k->getTargetId())) // verificando se a aresta do segundo grafo já contém no grafo união
+                {
+                    aux->insertEdge(k->getTargetId(), k->getWeight()); // inserindo todos as arestas do segundo grafo que não estão no primeiro grafo.
+                    graph_union->number_edges++;  
+                }                                    
+            }
+        }        
+    }
+    cout << "total de edges: " << graph_union->number_edges << endl;
+
+    return graph_union;
 }
 /*
 bool Graph::connectedGraph(){
