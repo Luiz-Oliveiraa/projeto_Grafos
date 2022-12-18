@@ -333,8 +333,9 @@ Graph *Graph::getComplement(){
     
 
 //A function that returns a subjacent of a directed graph, which is a graph which the arcs have opposite directions to the original graph
+/*
 Graph* Graph::getSubjacent(){
-    /*cria um novo grafo e ele recebe os primeiros parâmetros*/
+    //cria um novo grafo e ele recebe os primeiros parâmetros
     Graph* novo_grafo = new Graph(0, false, false, false);
     Node* p = this->first_node;
     Edge* e = p->getFirstEdge();
@@ -342,7 +343,7 @@ Graph* Graph::getSubjacent(){
     novo_grafo->last_node = p;
     novo_grafo->order = 0;
     novo_grafo->number_edges = 0;
-    /*faz o novo grafo mudando de digrafo para grafo base*/
+    //faz o novo grafo mudando de digrafo para grafo base
     for(p = this->first_node, e = p->getFirstEdge(); p != nullptr, e != nullptr; p = p->getNextNode(), e = e->getNextEdge()){
         novo_grafo->insertNode(p->getId(), p->getWeight());
         novo_grafo->insertEdge(p->getId(), e->getTargetId(), e->getWeight());
@@ -352,32 +353,50 @@ Graph* Graph::getSubjacent(){
     }
     return novo_grafo;
 }
+*/
 
 Graph* Graph::graphIntersection(Graph* graph2){
     Graph* novo_grafo = new Graph(0, false, false, false);
-    Node* p = this->first_node;
-    Node* k = graph2->first_node;
-    Node* t = NULL;
-    Edge* e = p->getFirstEdge();
-    Edge* f = k->getFirstEdge();
-    novo_grafo->order = 0;
-    novo_grafo->number_edges = 0;
-    for(p = this->first_node, e = p->getFirstEdge(); p != nullptr, e != nullptr; p = p->getNextNode(), e = e->getNextEdge()){
-        for(k = graph2->first_node, f = k->getFirstEdge(); k != nullptr, f != nullptr; k = k->getNextNode(), f = f->getNextEdge()){
-            if(p->getLabel() == k->getLabel() && p->getWeight() == k->getWeight() && e->getTargetId() == f->getTargetId()){
-                novo_grafo->insertNode(p->getId(), p->getWeight());
-                novo_grafo->insertEdge(p->getId(), e->getTargetId(), e->getWeight());
-                if(novo_grafo->first_node == nullptr)
-                    novo_grafo->first_node = p;
-                novo_grafo->order++;
-                novo_grafo->number_edges++;
-                t = p;
+    if(this->order > 0 && graph2->order > 0 && graph2->number_edges > 0 && this->number_edges > 0){
+        Node* p = this->first_node; //ponteiro pra percorrer os nós do grafo 1
+        Node* k = graph2->first_node; //ponteiro pra percorrer os nós do grafo 2
+        Edge* e = p->getFirstEdge(); //ponteiro pra percorrer as arestas do grafo 1
+        Edge* f = k->getFirstEdge();//ponteiro pra percorrer as arestas do grafo 2
+        // inicialização do novo_grafo
+        novo_grafo->order = 0;
+        novo_grafo->number_edges = 0;
+        for(p = this->first_node; p != nullptr; p = p->getNextNode()){ //passa pelos nós do primeiro grafo
+            for(k = graph2->first_node; k != nullptr; k = k->getNextNode()){//passa pelos nós do segundo grafo
+                if(p->getId() == k->getId()){
+                    novo_grafo->insertNode(p->getId(), p->getWeight());//adiciona os nós que forem iguais ao novo grafo
+                    for(e = p->getFirstEdge(); e != nullptr; e = e->getNextEdge()){//passa pelas arestas do primeiro grafo
+                        bool igual = true;
+                        for (f = k->getFirstEdge(); f != nullptr; f = f->getNextEdge()){//passa pelas arestas do segundo grafo
+                            if(e->getTargetId() == f->getTargetId()){//compara se as arestas dão no mesmo nó para adicionar
+                                igual = true;
+                            }
+                            else{
+                                igual = false;
+                                break;
+                            }
+                            if(igual){//adiciona as arestas
+                                novo_grafo->insertEdge(p->getId(), e->getTargetId(), e->getWeight());
+                            }
+                        }
+                    }
+                }
             }
         }
-        novo_grafo->last_node = t;
+        //delete [] passou;
+        return novo_grafo;
     }
-    return novo_grafo;
+    else{
+        cout << "ERRO: Grafo inválido." << endl;
+        return novo_grafo;
+        //exit(1);
+    }
 }
+
  Graph* Graph::graphDiference(Graph* graph2)
  {
     if (this->order == graph2->order && graph2->number_edges <= this->number_edges) //checando se o grafo 2 é valido

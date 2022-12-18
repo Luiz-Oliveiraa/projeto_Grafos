@@ -357,7 +357,6 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
         //Grafo Interseção
         case 11:
         {
-            string str;
             cout << "--------Grafo Interseção--------" << endl;
             Graph* graph2 = criaGrafo();
             saida(output_file, graph2);
@@ -419,10 +418,12 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
         }
         //
         case 16:{
+            /*
             Graph* novo = new Graph(0, false, false, false);
             cout << "-Grafo Subjacente-" << endl;
             novo->getSubjacent();
             novo->imprimeGrafo();
+            */
             break;
         }
         case 17:{
