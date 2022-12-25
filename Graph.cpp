@@ -355,52 +355,31 @@ Graph* Graph::getSubjacent(){
 }
 */
 
+// Alterações no Grafo Interseção
 Graph* Graph::graphIntersection(Graph* graph2){
     Graph* novo_grafo = new Graph(0, false, false, false);
-    if(this->order > 0 && graph2->order > 0 && graph2->number_edges > 0 && this->number_edges > 0){
+    if(this->order > 0 && graph2->order > 0 && graph2->number_edges > 0 && this->number_edges > 0 && graph2->directed == directed){
         Node* p = this->first_node; //ponteiro pra percorrer os nós do grafo 1
         Node* k = graph2->first_node; //ponteiro pra percorrer os nós do grafo 2
         Edge* e = p->getFirstEdge(); //ponteiro pra percorrer as arestas do grafo 1
         Edge* f = k->getFirstEdge();//ponteiro pra percorrer as arestas do grafo 2
         // inicialização do novo_grafo
-        int m = 0;
         novo_grafo->order = 0;
         novo_grafo->number_edges = 0;
         for(p = this->first_node; p != nullptr; p = p->getNextNode()){ //passa pelos nós do primeiro grafo
             for(k = graph2->first_node; k != nullptr; k = k->getNextNode()){//passa pelos nós do segundo grafo
                 if(p->getId() == k->getId()){
                     novo_grafo->insertNode(p->getId(), p->getWeight());//adiciona os nós que forem iguais ao novo grafo
-                    m++;
                     for(e = p->getFirstEdge(); e != nullptr; e = e->getNextEdge()){//passa pelas arestas do primeiro grafo
-                        bool* passou = new bool[m];
                         for (f = k->getFirstEdge(); f != nullptr; f = f->getNextEdge()){//passa pelas arestas do segundo grafo
-                            bool igual = true; //as arestas são iguais
-                            bool foi = true; //já passoi pelas arestas
                             if(e->getTargetId() == f->getTargetId()){//compara se as arestas dão no mesmo nó para adicionar
-                                for(int i = 0; i < m; i++){
-                                    if(passou[i] != foi){//compara se nunca passou no nó
-                                        igual = true;
-                                        foi = true;
-                                        passou[i] = true;
-                                        break;
-                                    }
-                                    else{
-                                        igual = false;
-                                        foi = false;
-                                        passou[i] = false;
-                                    }
+                                if(p->getId() != -1 || p->getFirstEdge() != nullptr){
+                                    if(!verificaAresta(novo_grafo, p, e->getTargetId())){
+                                        novo_grafo->insertEdge(p->getId(), e->getTargetId(), e->getWeight()); 
+                                    }                                    
                                 }
-                                if(igual){//adiciona as arestas
-                                    novo_grafo->insertEdge(p->getId(), e->getTargetId(), e->getWeight());
-                                }
+                                
                             }
-                            
-                            /*
-                            else{
-                                igual = false;
-                                foi = false;
-                                break;
-                            }*/
                         }
                     }
                 }
