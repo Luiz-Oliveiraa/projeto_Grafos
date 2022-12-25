@@ -355,6 +355,7 @@ Graph* Graph::getSubjacent(){
 }
 */
 
+// Alterações no Grafo Interseção
 Graph* Graph::graphIntersection(Graph* graph2){
     Graph* novo_grafo = new Graph(0, false, false, false);
     if(this->order > 0 && graph2->order > 0 && graph2->number_edges > 0 && this->number_edges > 0 && graph2->directed == directed){
