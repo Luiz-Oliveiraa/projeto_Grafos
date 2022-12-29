@@ -300,6 +300,92 @@ Node *Graph::getNodeForced(int id, float weight)
     
 }
 
+bool Graph::ordenacaoTopologica(){
+
+    int visitado[order] = {0}; //label para indicar se um nó foi visitado
+    bool ciclico = false;
+    stack<int> pilha;
+
+    Node* aux = first_node;
+    for(int i=0; aux != nullptr && i<order; i++, aux = aux->getNextNode()){
+        if(visitado[i] == 0)
+            auxOrdenacaoTopologica(visitado, i, aux, ciclico, pilha); //Busca em profoundidade adaptada, armazena valores numa pilha
+    }   
+
+    Node* no_a = first_node;
+    Node* anteriorA = nullptr;
+
+    Node* no_b = first_node->getNextNode();
+    Node* anteriorB = first_node;
+
+   
+    //Trocar as posições dos nós, para ordenar o grafo
+    for( ;no_a != nullptr && pilha.size() > 0; no_a = no_a->getNextNode()){
+        if(no_a->getId() != pilha.top()){
+            for(no_b = no_a->getNextNode(), anteriorB = no_a; no_b != nullptr; no_b = no_b->getNextNode(), anteriorB = anteriorB->getNextNode()){
+                if(no_b->getId() == pilha.top()){
+
+                    Node* proxA = no_a->getNextNode();
+                    Node* proxB = no_b->getNextNode();
+
+                    no_a->setNextNode(proxB);
+
+                    if(no_a == first_node){
+                        first_node = no_b;
+                    }else{
+                        anteriorA->setNextNode(no_b);
+                    }
+
+                    if(proxB == nullptr){
+                        last_node = no_a;
+                    }
+
+                    if(proxA == no_b){
+                        no_b->setNextNode(no_a);
+                    }else{
+                        no_b->setNextNode(proxA);
+                        anteriorB->setNextNode(no_a);
+                    }
+                    no_a = no_b; //resetando posição do ponteira na lista encadeada
+                    break;
+                }
+                
+            }
+        }
+        pilha.pop(); 
+        anteriorA = no_a;
+       
+    }
+
+    return ciclico;
+}
+
+//busca em profundidade adaptada, armazena valores numa pilha
+void Graph::auxOrdenacaoTopologica(int visitado[], int i, Node* no, bool &ciclico, stack<int> &pilha){
+    visitado[i] = 1;
+
+    for(Edge* e = no->getFirstEdge(); e!= nullptr; e = e->getNextEdge()){
+        int j = 0;
+        this->getNode(5);
+        for(Node* n = first_node; n!= nullptr && j < order; n = n->getNextNode(), j++){
+            if(n->getId() == e->getTargetId()){
+                if(visitado[j] == 0){
+                    auxOrdenacaoTopologica(visitado, j, n, ciclico, pilha);
+                }else{
+                    if(visitado[j] == 1){
+                        ciclico = true;
+                    }
+                    
+                }
+            }
+        }
+    }
+
+    pilha.push(no->getId());
+    visitado[i] = 2;
+    
+}
+
 
 //Function that verifies if there is a path between two nodes
 bool Graph::depthFirstSearch(int initialId, int targetId){

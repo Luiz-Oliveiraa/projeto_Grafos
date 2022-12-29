@@ -323,7 +323,12 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
 
         //Ordenação Topológica
         case 6:{
-            
+            graph->imprimeGrafo();
+            bool ciclico = graph->ordenacaoTopologica();
+            cout << endl << "Após ordenação: " << endl; 
+            cout << "ciclico: " << ciclico << endl; 
+            graph->imprimeGrafo();
+
             break;
         }
 

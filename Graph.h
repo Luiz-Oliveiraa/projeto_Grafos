@@ -57,6 +57,7 @@ class Graph{
         Graph* graphIntersection(Graph* graph2);
         Graph* graphUnion(Graph* graph2);
         Graph* graphDiference(Graph* graph2);
+        bool ordenacaoTopologica();
         //auxiliar
         bool auxDepthFirstSearch(int initialId, int targetId, Node* p);
 
@@ -64,6 +65,8 @@ class Graph{
         //Auxiliar methods
         void inicializaGrafo();
         bool verificaAresta(Graph* g, Node *p, int targetid);
+        //auxiliar
+        void auxOrdenacaoTopologica(int visitado[], int i, Node* no, bool &ciclico, stack<int> &pilha);
 
 };
 
