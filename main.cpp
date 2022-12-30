@@ -437,35 +437,32 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
         case 14:
         {
             //   ./execGrupo6 entradaPert.txt saida.dot 1 1 0
+
+            ///fazendo a impressao numa saida separada
             ofstream output_pert_saida;
             contPert++;
             string nome = "Saida_PERT"+ std::to_string(contPert) + ".txt";
             output_pert_saida.open(nome, ios::out | ios::trunc);
             if(output_pert_saida.is_open()){
                 graph->pert(output_pert_saida);
-                saidasPert.push_back(nome);
+                saidasPert.push_back(nome);//armazena o nomde das saidas criadas
             }
             else
                 cout << "Não foi possivel abrir o arquivo de saída do PERT" << endl;
-            
             output_pert_saida.close();
+            ///fazendo a impressao na saida que foi passada no terminal como parametro
             string linha;
-
             ifstream output_pert_entrada(nome);
             if(output_pert_entrada.is_open()){
                 if(output_file.is_open()){
                     while(getline(output_pert_entrada, linha)){
-                        cout << linha << endl;
                         output_file << linha << endl;
                     }
-                }else{
+                }else
                     cout << "Não foi possivel abrir o arquivo de saída" << endl;
-                }
-                
             }
             else
                 cout << "Não foi possivel abrir o arquivo de saída do PERT" << endl;
-            
             output_pert_entrada.close();
             break;
         }
