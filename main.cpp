@@ -13,6 +13,7 @@
 
 using namespace std;
 
+//numero de grafos criados
 list<string> listaSaidas;
 int contUniao = 0;
 int contDiferenca = 0;
@@ -226,18 +227,19 @@ void saida(ofstream& output_file, Graph* graph, string nome){
     }
 }
 
-Graph* criaGrafo(ofstream& output_file){
+Graph* criaGrafo(ofstream& output_file, bool direcionado, bool arestaPonderada, bool verticePonderado){
     cout << endl;
     int selecao[3] = {-1};
     
     system("clear"); //apaga tudo que esta no terminal
     cout << "Criando novo grafo..." << endl;
+    /*
     for (int i = 0; i < 3; i++)
     {
         int opcao = -1;
         while(opcao != 0 && opcao != 1){
             if(i == 0)
-                cout << "O grafo é ponderado?" << endl;
+                cout << "O grafo é direcionado?" << endl;
             if(i == 1)
                 cout << "O grafo possuí arestas ponderados?" << endl;
             if(i == 2)
@@ -250,6 +252,7 @@ Graph* criaGrafo(ofstream& output_file){
         }
         selecao[i] = opcao;
     }
+    */
 
     cout << "Digite o nome do arquivo de entrada. (exemplo: entrada2.txt)" << endl;
     string name;
@@ -262,7 +265,8 @@ Graph* criaGrafo(ofstream& output_file){
     Graph* graph;
 
     if(input_file.is_open()){
-        graph = leitura(input_file, selecao[0], selecao[1], selecao[2]);
+        //graph = leitura(input_file, selecao[0], selecao[1], selecao[2]);
+        graph = leitura(input_file, direcionado, arestaPonderada, verticePonderado);
         input_file.close();
         saida(output_file, graph, name);
         return graph;
@@ -382,7 +386,7 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
         case 11:
         {
             cout << "--------Grafo Interseção--------" << endl;
-            Graph* graph2 = criaGrafo(output_file);
+            Graph* graph2 = criaGrafo(output_file, graph->getDirected(), graph->getWeightedEdge(), graph->getWeightedNode());
             Graph* graph3 = new Graph(0, false, false, false);
             graph3 = graph->graphIntersection(graph2);
             graph3->imprimeGrafo();
@@ -400,7 +404,7 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
         case 12:
         {
             cout << "--------Grafo União--------" << endl;
-            Graph *graph2 = criaGrafo(output_file);
+            Graph *graph2 = criaGrafo(output_file, graph->getDirected(), graph->getWeightedEdge(), graph->getWeightedNode());
             Graph *graph3 = new Graph(0, false, false, false);
             graph3 = graph->graphUnion(graph2);
             contUniao++;
@@ -415,7 +419,7 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
         case 13:
         {
             cout << "--------Grafo Diferença--------" << endl;
-            Graph* graph2 = criaGrafo(output_file);
+            Graph* graph2 = criaGrafo(output_file, graph->getDirected(), graph->getWeightedEdge(), graph->getWeightedNode());
             Graph* graph3 = new Graph(0, false, false, false);
             graph3 = graph->graphDiference(graph2);
             graph3->imprimeGrafo();
@@ -469,7 +473,7 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
         case 18:{
             //exemplo de criacao de grafo:
             Graph* grafo2;
-            grafo2 = criaGrafo(output_file);
+            grafo2 = criaGrafo(output_file, graph->getDirected(), graph->getWeightedEdge(), graph->getWeightedNode());
 
             //se quiser adicionar na saida para gerar imagem:
             //saida(output_file, grafo2);
@@ -524,15 +528,9 @@ int mainMenu(ofstream& output_file, Graph* graph, string input_file_name, string
 
             newName = "mv ./imagem_" + *it + ".png ./imagens";
             system((newName).c_str());
-
-            //--------abre imagens
-            //newName = "open ./imagens/imagem_" + *it + ".png";
-            //system((newName).c_str());
         }
-        //--------abre saida.dot
-        //newName = "open ./imagens/" + output_file_name;
-        //system((newName).c_str());
-
+        
+        system("open ./imagens");
         return 0;
     }
         
