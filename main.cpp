@@ -323,7 +323,12 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
 
         //Ordenação Topológica
         case 6:{
-            
+            graph->imprimeGrafo();
+            bool ciclico = graph->ordenacaoTopologica();
+            cout << endl << "Após ordenação: " << endl; 
+            cout << "ciclico: " << ciclico << endl; 
+            graph->imprimeGrafo();
+
             break;
         }
 
@@ -404,7 +409,8 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
         //Rede Pert
         case 14:
         {
-            
+            //   ./execGrupo6 entradaPert.txt saida.dot 1 1 0
+            graph->pert(output_file);
             break;
 
         }

@@ -300,6 +300,242 @@ Node *Graph::getNodeForced(int id, float weight)
     
 }
 
+bool Graph::ordenacaoTopologica(){
+
+    int visitado[order] = {0}; //label para indicar se um nó foi visitado
+    bool ciclico = false;
+    stack<int> pilha;
+
+    Node* aux = first_node;
+    for(int i=0; aux != nullptr && i<order; i++, aux = aux->getNextNode()){
+        if(visitado[i] == 0)
+            auxOrdenacaoTopologica(visitado, i, aux, ciclico, pilha); //Busca em profoundidade adaptada, armazena valores numa pilha
+    }   
+
+    Node* no_a = first_node;
+    Node* anteriorA = nullptr;
+
+    Node* no_b = first_node->getNextNode();
+    Node* anteriorB = first_node;
+
+   
+    //Trocar as posições dos nós, para ordenar o grafo
+    for( ;no_a != nullptr && pilha.size() > 0; no_a = no_a->getNextNode()){
+        if(no_a->getId() != pilha.top()){
+            for(no_b = no_a->getNextNode(), anteriorB = no_a; no_b != nullptr; no_b = no_b->getNextNode(), anteriorB = anteriorB->getNextNode()){
+                if(no_b->getId() == pilha.top()){
+
+                    Node* proxA = no_a->getNextNode();
+                    Node* proxB = no_b->getNextNode();
+
+                    no_a->setNextNode(proxB);
+
+                    if(no_a == first_node){
+                        first_node = no_b;
+                    }else{
+                        anteriorA->setNextNode(no_b);
+                    }
+
+                    if(proxB == nullptr){
+                        last_node = no_a;
+                    }
+
+                    if(proxA == no_b){
+                        no_b->setNextNode(no_a);
+                    }else{
+                        no_b->setNextNode(proxA);
+                        anteriorB->setNextNode(no_a);
+                    }
+                    no_a = no_b; //resetando posição do ponteira na lista encadeada
+                    break;
+                }
+                
+            }
+        }
+        pilha.pop(); 
+        anteriorA = no_a;
+       
+    }
+
+    return ciclico;
+}
+
+//busca em profundidade adaptada, armazena valores numa pilha
+void Graph::auxOrdenacaoTopologica(int visitado[], int i, Node* no, bool &ciclico, stack<int> &pilha){
+    visitado[i] = 1;
+
+    for(Edge* e = no->getFirstEdge(); e!= nullptr; e = e->getNextEdge()){
+        int j = 0;
+        this->getNode(5);
+        for(Node* n = first_node; n!= nullptr && j < order; n = n->getNextNode(), j++){
+            if(n->getId() == e->getTargetId()){
+                if(visitado[j] == 0){
+                    auxOrdenacaoTopologica(visitado, j, n, ciclico, pilha);
+                }else{
+                    if(visitado[j] == 1){
+                        ciclico = true;
+                    }
+                    
+                }
+            }
+        }
+    }
+
+    pilha.push(no->getId());
+    visitado[i] = 2;
+    
+}
+
+bool Graph::verificaPossibilidadeDePert(ofstream& output_file){
+    if(!output_file.is_open()){
+        cout << "Não foi possivel abrir o arquivo de saida" << endl;
+        return 0;
+    }
+    output_file << endl << "/*" << endl;
+    output_file << endl << "____________REDE PERT____________" << endl << endl;
+
+    if(!getDirected()){
+        output_file << endl << "Não foi possivel realizar o pert, pois o grafo não é direcionado" << endl;
+        output_file << endl << "*/" << endl;
+        return 0;
+    }
+    if(!getWeightedEdge()){
+        output_file << endl << "Não foi possivel realizar o pert, pois o grafo não tem arestas ponderadas" << endl;
+        output_file << endl << "*/" << endl;
+        return 0;
+    }
+
+    int inicio = 0;
+    int fim = 0;
+    //conta se o grafo tem mais de um "nó inicio" ou mais de um "nó final"
+    for(Node* p = first_node; p!=nullptr; p = p->getNextNode()){
+        if(p->getInDegree() <= 0){
+            fim++;
+            if(fim > 1){
+                output_file << endl << "Não foi possivel realizar o pert, pois o grafo tem mais de uma 'etapa saída'" << endl;
+                output_file << endl << "(mais de um nó que não inicia tarefas)" << endl;
+                output_file << endl << "*/" << endl;
+                return 0;
+                break;
+            }
+        }
+        if(p->getOutDegree() <= 0){
+            inicio++;
+            if(inicio > 1){
+                output_file << endl << "Não foi possivel realizar o pert, pois o grafo tem mais de uma 'etapa inicio'" << endl;
+                output_file << endl << "(mais de um nó que não recebe tarefas)" << endl;
+                output_file << endl << "*/" << endl;
+                return 0;
+                break;
+            }
+        }
+    }
+
+    if(ordenacaoTopologica()){
+        output_file << endl << "Não foi possivel realizar o pert, pois o grafo é ciclico" << endl;
+        output_file << endl << "*/" << endl;
+        return 0;
+    }
+
+    return true;
+}
+
+
+bool Graph::pert(ofstream& output_file){
+    if(!verificaPossibilidadeDePert(output_file))
+        return 0;
+
+    int menorTempo[order] = {};
+    int maiorTempo[order];
+    int vetor[order];
+    stack<int> pilha; //auxiliar usado para criar um grafo com as arestas invertidas
+
+    ///calculando tempo mínimo
+    Node* p;
+    int i=0;
+    for(p = first_node, i=0; p!= nullptr; p = p->getNextNode(), i++){
+        vetor[i] = p->getId();
+        pilha.push(p->getId());
+        for(Edge* e = p->getFirstEdge(); e!=nullptr; e = e->getNextEdge()){
+            int indice = 0;
+            for(Node* q = first_node; q!= nullptr; q = q->getNextNode(), indice ++){
+                if(e->getTargetId() == q->getId()){
+                    if(menorTempo[indice] < e->getWeight()+ menorTempo[i]){
+                        menorTempo[indice] = e->getWeight() + menorTempo[i];
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    //criando um grafo auxiliar com arestas invertiads
+    Graph graphAux(order, getDirected(), getWeightedEdge(), getWeightedNode());
+    for(;pilha.size() > 0; pilha.pop()){
+        graphAux.insertNode(pilha.top(), 0);
+    }
+
+    for(Node* p = first_node; p!= nullptr; p = p->getNextNode()){
+        for(Edge* e = p->getFirstEdge(); e!=nullptr; e = e->getNextEdge()){
+            graphAux.insertEdge(e->getTargetId(), p->getId(), e->getWeight());
+        }
+    }
+
+    ///calculando tempo máximo
+    for(int j = 0; j<order; j++)
+        maiorTempo[j] = {menorTempo[order-1]};
+
+    for(p = graphAux.first_node, i= order-1; p!= nullptr; p = p->getNextNode(), i--){
+        for(Edge* e = p->getFirstEdge(); e!=nullptr; e = e->getNextEdge()){
+            int indice = order-1;
+            for(Node* q = graphAux.first_node; q!= nullptr; q = q->getNextNode(), indice --){
+                if(e->getTargetId() == q->getId()){
+                    if(maiorTempo[indice] > maiorTempo[i] - e->getWeight()){
+                        maiorTempo[indice] = maiorTempo[i] - e->getWeight();
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    ///ordenando menor caminho
+    int menor, aux;
+    for(i=0;i<order;i++){
+        menor = i;
+        for(int j=i+1; j<order; j++){
+            if(menorTempo[menor]>menorTempo[j])
+                menor = j;
+        }
+        if(i != menor){
+            aux = menorTempo[i];
+            menorTempo[i] = menorTempo[menor];
+            menorTempo[menor] = aux;
+
+            aux = maiorTempo[i];
+            maiorTempo[i] = maiorTempo[menor];
+            maiorTempo[menor] = aux;
+
+            aux = vetor[i];
+            vetor[i] = vetor[menor];
+            vetor[menor] = aux;
+        }
+    }
+    ///imprimindo na saida
+    output_file << "Ordem de execução:" << endl << endl;
+    for(i=0; i<order; i++){
+        output_file << "tarefa "<< vetor[i] << ":\ttempo mínimo de ínicio: "<< menorTempo[i];
+        output_file << "\ttempo máximo de ínicio: " << maiorTempo[i] << endl;    
+    }
+    if(order>0){
+        output_file << endl <<"Tempo Total de execução: " << menorTempo[order-1] << endl;
+        
+        output_file << "_________________________________" << endl;
+    }
+
+    output_file << endl << "*/" << endl;
+    return 1;
+}
+
 
 //Function that verifies if there is a path between two nodes
 bool Graph::depthFirstSearch(int initialId, int targetId){
