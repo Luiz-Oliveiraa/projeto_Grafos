@@ -58,6 +58,7 @@ class Graph{
         Graph* graphUnion(Graph* graph2);
         Graph* graphDiference(Graph* graph2);
         bool ordenacaoTopologica();
+        bool pert(ofstream& output_file);
         //auxiliar
         bool auxDepthFirstSearch(int initialId, int targetId, Node* p);
 
@@ -67,6 +68,7 @@ class Graph{
         bool verificaAresta(Graph* g, Node *p, int targetid);
         //auxiliar
         void auxOrdenacaoTopologica(int visitado[], int i, Node* no, bool &ciclico, stack<int> &pilha);
+        bool verificaPossibilidadeDePert(ofstream& output_file);
 
 };
 
