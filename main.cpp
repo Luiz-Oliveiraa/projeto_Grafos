@@ -15,6 +15,7 @@ using namespace std;
 
 //numero de grafos criados
 list<string> listaSaidas;
+list<string> saidasPert;
 int contUniao = 0;
 int contDiferenca = 0;
 int contInterseção = 0;
@@ -436,9 +437,37 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
         case 14:
         {
             //   ./execGrupo6 entradaPert.txt saida.dot 1 1 0
-            graph->pert(output_file);
-            break;
+            ofstream output_pert_saida;
+            contPert++;
+            string nome = "Saida_PERT"+ std::to_string(contPert) + ".txt";
+            output_pert_saida.open(nome, ios::out | ios::trunc);
+            if(output_pert_saida.is_open()){
+                graph->pert(output_pert_saida);
+                saidasPert.push_back(nome);
+            }
+            else
+                cout << "Não foi possivel abrir o arquivo de saída do PERT" << endl;
+            
+            output_pert_saida.close();
+            string linha;
 
+            ifstream output_pert_entrada(nome);
+            if(output_pert_entrada.is_open()){
+                if(output_file.is_open()){
+                    while(getline(output_pert_entrada, linha)){
+                        cout << linha << endl;
+                        output_file << linha << endl;
+                    }
+                }else{
+                    cout << "Não foi possivel abrir o arquivo de saída" << endl;
+                }
+                
+            }
+            else
+                cout << "Não foi possivel abrir o arquivo de saída do PERT" << endl;
+            
+            output_pert_entrada.close();
+            break;
         }
 
         //imprime Grafo
@@ -515,10 +544,9 @@ int mainMenu(ofstream& output_file, Graph* graph, string input_file_name, string
         //--------gera imagena
         system("dot -Tpng -O saida.dot");
 
-        //renomeia as imagens e move para a pasta
+        ////--------renomeia as imagens e move para a pasta
         int cont = 1;
         for(auto it = listaSaidas.begin(); it != listaSaidas.end();it++,cont++){
-            cout << *it << endl; 
             if(cont==1){
                 newName = "mv " + name + ".png imagem_" + *it + ".png";
             }else{
@@ -529,8 +557,15 @@ int mainMenu(ofstream& output_file, Graph* graph, string input_file_name, string
             newName = "mv ./imagem_" + *it + ".png ./imagens";
             system((newName).c_str());
         }
-        
-        system("open ./imagens");
+
+        //--------copiando saidas do PERT para a pasta
+        cont = 1;
+        for(auto it = saidasPert.begin(); it != saidasPert.end();it++,cont++){
+            newName = "mv ./" + *it + " ./imagens";
+            system((newName).c_str());
+        }
+        //--------abrindo a pasta
+        system("open imagens");
         return 0;
     }
         
