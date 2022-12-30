@@ -7,10 +7,18 @@
 #include <iomanip>
 #include <stdlib.h>
 #include <chrono>
+#include <list>
 #include "Graph.h"
 #include "Node.h"
 
 using namespace std;
+
+//numero de grafos criados
+list<string> listaSaidas;
+int contUniao = 0;
+int contDiferenca = 0;
+int contInterseção = 0;
+int contPert = 0;
 
 /*
 
@@ -126,100 +134,112 @@ Graph* leitura(ifstream& input_file, int directed, int weightedEdge, int weighte
 
 
 //pode escrever varios grafos na mesma saida; para gerar imagem, a saida tem que ser .dot
-void saida(ofstream& output_file, Graph* graph){
-    if(output_file.is_open()){
-        if(!graph->getDirected())
-            output_file << "graph grafo{" << endl;
-        else
-            output_file << "digraph grafo{" << endl;
-
-        //-----Personalizar layout (circo, dot, fdp, neato, osage, patchwork, sfdp, twopi)
-        //output_file << "\tlayout = circo;" << endl;
-        //output_file << "\tnode [style = filled, color = yellow]" << endl; //personalizar nó
-        //output_file << "\tedge [color = red]" << endl << endl; //personalizar aresta
-        
-        if(graph->getWeightedNode()){
-            for(Node* p = graph->getFirstNode(); p!=nullptr; p = p->getNextNode()){
-                output_file << "\t" << p->getLabel() << "[label=\"" << p->getId() << "| p:" << p->getWeight() << "\"]" << endl;
-            }
-        }else{
-            for(Node* p = graph->getFirstNode(); p!=nullptr; p = p->getNextNode()){
-                output_file << "\t" << p->getLabel() << "[label=\"" << p->getId() << "\"]" << endl;
-            }
+void saida(ofstream& output_file, Graph* graph, string nome){
+    bool adicionar = true;
+    for(auto it = listaSaidas.begin(); it!=listaSaidas.end(); it++){
+        if(*it == nome){
+            adicionar = false;
+            break;
         }
+    }
 
-        output_file << endl;
-        if(!graph->getDirected()){
-            //estrutura auxiliar para diferenciar arestas repetidas de multiarestas
-            int num_multiarestas[graph->getNumberEdges()] = {0};
-            int nodeSource[graph->getNumberEdges()];
-            int nodeTarget[graph->getNumberEdges()];
+    if(adicionar){
+        listaSaidas.push_back(nome);
+        if(output_file.is_open()){
+            if(!graph->getDirected())
+                output_file << "graph grafo{" << endl;
+            else
+                output_file << "digraph grafo{" << endl;
 
-            for(Node* p = graph->getFirstNode(); p!=nullptr; p = p->getNextNode()){
-                for(Edge* edge = p->getFirstEdge(); edge != nullptr; edge = edge->getNextEdge()){
+            //-----Personalizar layout (circo, dot, fdp, neato, osage, patchwork, sfdp, twopi)
+            //output_file << "\tlayout = circo;" << endl;
+            //output_file << "\tnode [style = filled, color = yellow]" << endl; //personalizar nó
+            //output_file << "\tedge [color = red]" << endl << endl; //personalizar aresta
+            
+            if(graph->getWeightedNode()){
+                for(Node* p = graph->getFirstNode(); p!=nullptr; p = p->getNextNode()){
+                    output_file << "\t" << p->getLabel() << "[label=\"" << p->getId() << "| p:" << p->getWeight() << "\"]" << endl;
+                }
+            }else{
+                for(Node* p = graph->getFirstNode(); p!=nullptr; p = p->getNextNode()){
+                    output_file << "\t" << p->getLabel() << "[label=\"" << p->getId() << "\"]" << endl;
+                }
+            }
 
-                    int nodeA = p->getId(), nodeB = edge->getTargetId();
-                    bool imprime = false;
+            output_file << endl;
+            if(!graph->getDirected()){
+                //estrutura auxiliar para diferenciar arestas repetidas de multiarestas
+                int num_multiarestas[graph->getNumberEdges()] = {0};
+                int nodeSource[graph->getNumberEdges()];
+                int nodeTarget[graph->getNumberEdges()];
 
-                    for(int i=0;i<graph->getNumberEdges();i++, imprime = false){
-                        if(num_multiarestas[i] == 0){
-                            nodeSource[i] = nodeA;
-                            nodeTarget[i] = nodeB;
-                            num_multiarestas[i]++;
-                            imprime = true;
-                        }else{
-                            if(nodeSource[i] == nodeA && nodeTarget[i] == nodeB){
+                for(Node* p = graph->getFirstNode(); p!=nullptr; p = p->getNextNode()){
+                    for(Edge* edge = p->getFirstEdge(); edge != nullptr; edge = edge->getNextEdge()){
+
+                        int nodeA = p->getId(), nodeB = edge->getTargetId();
+                        bool imprime = false;
+
+                        for(int i=0;i<graph->getNumberEdges();i++, imprime = false){
+                            if(num_multiarestas[i] == 0){
+                                nodeSource[i] = nodeA;
+                                nodeTarget[i] = nodeB;
                                 num_multiarestas[i]++;
                                 imprime = true;
-                            }else if(nodeTarget[i] == nodeA && nodeSource[i] == nodeB){
-                                imprime = false;
+                            }else{
+                                if(nodeSource[i] == nodeA && nodeTarget[i] == nodeB){
+                                    num_multiarestas[i]++;
+                                    imprime = true;
+                                }else if(nodeTarget[i] == nodeA && nodeSource[i] == nodeB){
+                                    imprime = false;
+                                    break;
+                                }
+                            }
+                            if(imprime){
+                                if(graph->getWeightedEdge()){
+                                    output_file << "\t" << p->getLabel() << " -- " << graph->getNode(edge->getTargetId())->getLabel();
+                                    output_file << "[label=\"" << edge->getWeight() << "\"]" << endl;
+                                }else{
+                                    output_file << "\t" << p->getLabel() << " -- " << graph->getNode(edge->getTargetId())->getLabel() << endl;
+                                }
                                 break;
                             }
                         }
-                        if(imprime){
-                            if(graph->getWeightedEdge()){
-                                output_file << "\t" << p->getLabel() << " -- " << graph->getNode(edge->getTargetId())->getLabel();
-                                output_file << "[label=\"" << edge->getWeight() << "\"]" << endl;
-                            }else{
-                                output_file << "\t" << p->getLabel() << " -- " << graph->getNode(edge->getTargetId())->getLabel() << endl;
-                            }
-                            break;
+                    }
+                } 
+            }else{
+                for(Node* p = graph->getFirstNode(); p!=nullptr; p = p->getNextNode()){
+                    for(Edge* edge = p->getFirstEdge(); edge != nullptr; edge = edge->getNextEdge()){
+                        if(graph->getWeightedEdge()){
+                            output_file << "\t" << p->getLabel() << " -> " << graph->getNode(edge->getTargetId())->getLabel();
+                            output_file << "[label=\"" << edge->getWeight() << "\"]" << endl;
+                        }else{
+                            output_file << "\t" << p->getLabel() << " -> " << graph->getNode(edge->getTargetId())->getLabel() << endl;
                         }
                     }
                 }
-            } 
-        }else{
-            for(Node* p = graph->getFirstNode(); p!=nullptr; p = p->getNextNode()){
-                for(Edge* edge = p->getFirstEdge(); edge != nullptr; edge = edge->getNextEdge()){
-                    if(graph->getWeightedEdge()){
-                        output_file << "\t" << p->getLabel() << " -> " << graph->getNode(edge->getTargetId())->getLabel();
-                        output_file << "[label=\"" << edge->getWeight() << "\"]" << endl;
-                    }else{
-                        output_file << "\t" << p->getLabel() << " -> " << graph->getNode(edge->getTargetId())->getLabel() << endl;
-                    }
-                }
             }
+            
+            output_file << endl << "}" << endl;
         }
-        
-        output_file << endl << "}" << endl;
-    }
 
-     else
-            cout << "Não foi possivel abrir o arquivo de saida" << endl;
+        else
+                cout << "Não foi possivel abrir o arquivo de saida" << endl;
+    }
 }
 
-Graph* criaGrafo(){
+Graph* criaGrafo(ofstream& output_file, bool direcionado, bool arestaPonderada, bool verticePonderado){
     cout << endl;
     int selecao[3] = {-1};
     
     system("clear"); //apaga tudo que esta no terminal
     cout << "Criando novo grafo..." << endl;
+    /*
     for (int i = 0; i < 3; i++)
     {
         int opcao = -1;
         while(opcao != 0 && opcao != 1){
             if(i == 0)
-                cout << "O grafo é ponderado?" << endl;
+                cout << "O grafo é direcionado?" << endl;
             if(i == 1)
                 cout << "O grafo possuí arestas ponderados?" << endl;
             if(i == 2)
@@ -232,6 +252,7 @@ Graph* criaGrafo(){
         }
         selecao[i] = opcao;
     }
+    */
 
     cout << "Digite o nome do arquivo de entrada. (exemplo: entrada2.txt)" << endl;
     string name;
@@ -244,8 +265,10 @@ Graph* criaGrafo(){
     Graph* graph;
 
     if(input_file.is_open()){
-        graph = leitura(input_file, selecao[0], selecao[1], selecao[2]);
+        //graph = leitura(input_file, selecao[0], selecao[1], selecao[2]);
+        graph = leitura(input_file, direcionado, arestaPonderada, verticePonderado);
         input_file.close();
+        saida(output_file, graph, name);
         return graph;
     }else{
         cout << "Unable to open " << name << endl;
@@ -288,7 +311,7 @@ int menu(){
 }
 
 void selecionar(int selecao, Graph* graph, ofstream& output_file){
-
+    
     switch (selecao) {
 
         //Complementar
@@ -363,13 +386,14 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
         case 11:
         {
             cout << "--------Grafo Interseção--------" << endl;
-            Graph* graph2 = criaGrafo();
-            saida(output_file, graph2);
+            Graph* graph2 = criaGrafo(output_file, graph->getDirected(), graph->getWeightedEdge(), graph->getWeightedNode());
             Graph* graph3 = new Graph(0, false, false, false);
             graph3 = graph->graphIntersection(graph2);
             graph3->imprimeGrafo();
             graph->imprimeGrafo();
-            saida(output_file, graph3);
+            contInterseção++;
+            string nome = "Interseção" + std::to_string(contInterseção);
+            saida(output_file, graph3, nome);
             delete graph3;
             delete graph2;
             break;
@@ -380,11 +404,12 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
         case 12:
         {
             cout << "--------Grafo União--------" << endl;
-            Graph *graph2 = criaGrafo();
-            saida(output_file, graph2);
+            Graph *graph2 = criaGrafo(output_file, graph->getDirected(), graph->getWeightedEdge(), graph->getWeightedNode());
             Graph *graph3 = new Graph(0, false, false, false);
             graph3 = graph->graphUnion(graph2);
-            saida(output_file, graph3);
+            contUniao++;
+            string nome = "União" + std::to_string(contUniao);
+            saida(output_file, graph3, nome);
             delete graph3;
             delete graph2;
             break;   
@@ -394,12 +419,13 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
         case 13:
         {
             cout << "--------Grafo Diferença--------" << endl;
-            Graph* graph2 = criaGrafo();
-            saida(output_file, graph2);
+            Graph* graph2 = criaGrafo(output_file, graph->getDirected(), graph->getWeightedEdge(), graph->getWeightedNode());
             Graph* graph3 = new Graph(0, false, false, false);
             graph3 = graph->graphDiference(graph2);
             graph3->imprimeGrafo();
-            saida(output_file, graph3);
+            contDiferenca++;
+            string nome = "Diferença" + std::to_string(contDiferenca);
+            saida(output_file, graph3, nome);
             delete graph3;
             delete graph2;
             break;
@@ -447,10 +473,10 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
         case 18:{
             //exemplo de criacao de grafo:
             Graph* grafo2;
-            grafo2 = criaGrafo();
+            grafo2 = criaGrafo(output_file, graph->getDirected(), graph->getWeightedEdge(), graph->getWeightedNode());
 
             //se quiser adicionar na saida para gerar imagem:
-            saida(output_file, grafo2);
+            //saida(output_file, grafo2);
 
             //não esquecer de desalocar o grafo
             delete grafo2;
@@ -458,7 +484,7 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
   }
 }
 
-int mainMenu(ofstream& output_file, Graph* graph){
+int mainMenu(ofstream& output_file, Graph* graph, string input_file_name, string output_file_name){
 
     int selecao = 1;
 
@@ -476,8 +502,35 @@ int mainMenu(ofstream& output_file, Graph* graph){
 
     }
     if(selecao == 0){
-        saida(output_file, graph);
+
+        saida(output_file, graph, input_file_name);
+        string name = "saida.dot";
+        string newName;
+
+        //--------cria a pasta
+        system("rm -vr imagens");
+        system("mkdir imagens");
+        system(("cp ./" + output_file_name + " ./imagens").c_str());
+
+        //--------gera imagena
         system("dot -Tpng -O saida.dot");
+
+        //renomeia as imagens e move para a pasta
+        int cont = 1;
+        for(auto it = listaSaidas.begin(); it != listaSaidas.end();it++,cont++){
+            cout << *it << endl; 
+            if(cont==1){
+                newName = "mv " + name + ".png imagem_" + *it + ".png";
+            }else{
+                newName = "mv " + name + "." + std::to_string(cont) + ".png imagem_" + *it + ".png";
+            }
+            system((newName).c_str());
+
+            newName = "mv ./imagem_" + *it + ".png ./imagens";
+            system((newName).c_str());
+        }
+        
+        system("open ./imagens");
         return 0;
     }
         
@@ -498,6 +551,7 @@ int main(int argc, char const *argv[]) {
 
     string program_name(argv[0]);
     string input_file_name(argv[1]);
+    string output_file_name(argv[2]);
 
     string instance;
     
@@ -520,7 +574,7 @@ int main(int argc, char const *argv[]) {
         cout << "Unable to open " << argv[1];
 
     
-    mainMenu(output_file, graph);
+    mainMenu(output_file, graph, input_file_name, output_file_name);
 
     
 
