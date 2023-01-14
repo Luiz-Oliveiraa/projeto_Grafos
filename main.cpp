@@ -13,9 +13,11 @@
 
 using namespace std;
 
-//numero de grafos criados
+//auxiliares para geração das saidas
+//nomes das saidas
 list<string> listaSaidas;
-list<string> saidasPert;
+list<string> saidasPert; 
+//quantidade de saidas
 int contUniao = 0;
 int contDiferenca = 0;
 int contInterseção = 0;
@@ -30,16 +32,9 @@ André Dutra
 Matheus Peron
 
 Comandos ara executar o programa no terminal:
-Windows:
-g++ Edge.cpp Node.cpp Graph.cpp main.cpp -o execGrupo6
-.\execGrupo6.exe entrada.txt saida.txt 0 0 0
 Linux:
 g++ Edge.cpp Node.cpp Graph.cpp main.cpp -o execGrupo6
 ./execGrupo6 entrada.txt saida.dot 0 0 0
-
-Para gerar imagem, a saida tem que ser .dot
-depois de executar o programa, no terminal digite:
-dot -Tpng -O saida.dot
 
 Parâmetros:
 executavel,
@@ -48,8 +43,6 @@ nome_da_saida.dot,
 booleano se é um grafo direcionado,
 booleano se tem aresta ponderado,
 booleano se tem vertice ponderado
-
-vc tem que deixar uma entrada.txt na pasta onde sera executado o programa
 
 Teste commit
 */
@@ -234,26 +227,6 @@ Graph* criaGrafo(ofstream& output_file, bool direcionado, bool arestaPonderada, 
     
     system("clear"); //apaga tudo que esta no terminal
     cout << "Criando novo grafo..." << endl;
-    /*
-    for (int i = 0; i < 3; i++)
-    {
-        int opcao = -1;
-        while(opcao != 0 && opcao != 1){
-            if(i == 0)
-                cout << "O grafo é direcionado?" << endl;
-            if(i == 1)
-                cout << "O grafo possuí arestas ponderados?" << endl;
-            if(i == 2)
-                cout << "O grafo possuí vértices ponderados?" << endl;
-            
-            cout << "[0] para NÃO" << endl << "[1] para SIM" << endl;
-            cin >>  opcao;
-            system("clear"); //apaga tudo que esta no terminal
-            cout << "Criando novo grafo..." << endl;
-        }
-        selecao[i] = opcao;
-    }
-    */
 
     cout << "Digite o nome do arquivo de entrada. (exemplo: entrada2.txt)" << endl;
     string name;
@@ -608,7 +581,6 @@ int main(int argc, char const *argv[]) {
     
     mainMenu(output_file, graph, input_file_name, output_file_name);
 
-    
 
     //Fechando arquivo de entrada
     input_file.close();
