@@ -13,9 +13,11 @@
 
 using namespace std;
 
-//numero de grafos criados
+//auxiliares para geração das saidas
+//nomes das saidas
 list<string> listaSaidas;
-list<string> saidasPert;
+list<string> saidasPert; 
+//quantidade de saidas
 int contUniao = 0;
 int contDiferenca = 0;
 int contInterseção = 0;
@@ -30,16 +32,9 @@ André Dutra
 Matheus Peron
 
 Comandos ara executar o programa no terminal:
-Windows:
-g++ Edge.cpp Node.cpp Graph.cpp main.cpp -o execGrupo6
-.\execGrupo6.exe entrada.txt saida.txt 0 0 0
 Linux:
 g++ Edge.cpp Node.cpp Graph.cpp main.cpp -o execGrupo6
 ./execGrupo6 entrada.txt saida.dot 0 0 0
-
-Para gerar imagem, a saida tem que ser .dot
-depois de executar o programa, no terminal digite:
-dot -Tpng -O saida.dot
 
 Parâmetros:
 executavel,
@@ -48,8 +43,6 @@ nome_da_saida.dot,
 booleano se é um grafo direcionado,
 booleano se tem aresta ponderado,
 booleano se tem vertice ponderado
-
-vc tem que deixar uma entrada.txt na pasta onde sera executado o programa
 
 Teste commit
 */
@@ -234,26 +227,6 @@ Graph* criaGrafo(ofstream& output_file, bool direcionado, bool arestaPonderada, 
     
     system("clear"); //apaga tudo que esta no terminal
     cout << "Criando novo grafo..." << endl;
-    /*
-    for (int i = 0; i < 3; i++)
-    {
-        int opcao = -1;
-        while(opcao != 0 && opcao != 1){
-            if(i == 0)
-                cout << "O grafo é direcionado?" << endl;
-            if(i == 1)
-                cout << "O grafo possuí arestas ponderados?" << endl;
-            if(i == 2)
-                cout << "O grafo possuí vértices ponderados?" << endl;
-            
-            cout << "[0] para NÃO" << endl << "[1] para SIM" << endl;
-            cin >>  opcao;
-            system("clear"); //apaga tudo que esta no terminal
-            cout << "Criando novo grafo..." << endl;
-        }
-        selecao[i] = opcao;
-    }
-    */
 
     cout << "Digite o nome do arquivo de entrada. (exemplo: entrada2.txt)" << endl;
     string name;
@@ -283,26 +256,13 @@ int menu(){
 
     cout << "MENU" << endl;
     cout << "----" << endl;
-    cout << "[1] Complementar do grafo" << endl;
-    cout << "[2] Imprimir caminhamento em largura" << endl;
-    cout << "[3] Busca em profundidade" << endl;
-    cout << "[4] Imprimir componentes conexas" << endl;
-    cout << "[5] Imprimir componentes fortemente conexas" << endl;
-    cout << "[6] Imprimir ordenacao topológica" << endl;
-    cout << "[7] Árvore Geradora Mínima de Prim" << endl;
-    cout << "[8] Caminho Mínimo Dijkstra" << endl;
-    cout << "[9] Caminho Mínimo Floyd" << endl;
-    cout << "[10] Algoritmos Gulosos (Abre um submenu)" << endl;
     cout << "Funcionalidades da parte 1 do trabalho:" << endl;
-    cout << "[11] Grafo interseção" << endl;
-    cout << "[12] Grafo União" << endl;
-    cout << "[13] Grafo Diferença" << endl;
-    cout << "[14] Rede Pert" << endl;
+    cout << "[1] Grafo interseção" << endl;
+    cout << "[2] Grafo União" << endl;
+    cout << "[3] Grafo Diferença" << endl;
+    cout << "[4] Rede Pert" << endl;
     cout << "Funcionalidades Auxiliares" << endl;
-    cout << "[15] Imprime Grafo" << endl;
-    cout << "[16] Grafo Subjacente" << endl;
-    cout << "[17] Existe caminho entre os 2 nós?" << endl;
-    cout << "[18] teste da função cria novo grafo (opcao provisoria)" << endl;
+    cout << "[5] Imprime Grafo" << endl;
     cout << "[0] Sair" << endl;
 
     cin >> selecao;
@@ -315,76 +275,8 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
     
     switch (selecao) {
 
-        //Complementar
-        case 1:{
-            
-            break;
-        }
-
-        //BFS
-        case 2:{
-           
-            break;
-        }
-
-        //DFS
-        case 3:{
-            
-            break;
-        }
-
-        //Componentes Conexas
-        case 4:{
-
-            break;
-        }
-
-        //Componentes Fortementes Conexas
-        case 5:{
-            
-            break;
-        }
-
-        //Ordenação Topológica
-        case 6:{
-            graph->imprimeGrafo();
-            bool ciclico = graph->ordenacaoTopologica();
-            cout << endl << "Após ordenação: " << endl; 
-            cout << "ciclico: " << ciclico << endl; 
-            graph->imprimeGrafo();
-
-            break;
-        }
-
-        case 7:{
-
-            break;
-        }
-
-        //Algoritmo de Prim
-        case 8:
-        {
-            
-            break;
-        }
-
-        //Algoritmo de Dijkstra
-        case 9:
-        {
-            
-            break;
-        }
-
-        //Algoritmo de Floyd
-        case 10:
-        {
-            
-            break;
-
-        }
-
         //Grafo Interseção
-        case 11:
+        case 1:
         {
             cout << "--------Grafo Interseção--------" << endl;
             Graph* graph2 = criaGrafo(output_file, graph->getDirected(), graph->getWeightedEdge(), graph->getWeightedNode());
@@ -402,7 +294,7 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
         }
 
         //Grafo União
-        case 12:
+        case 2:
         {
             cout << "--------Grafo União--------" << endl;
             Graph *graph2 = criaGrafo(output_file, graph->getDirected(), graph->getWeightedEdge(), graph->getWeightedNode());
@@ -417,7 +309,7 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
         }
 
         //Grafo Diferença
-        case 13:
+        case 3:
         {
             cout << "--------Grafo Diferença--------" << endl;
             Graph* graph2 = criaGrafo(output_file, graph->getDirected(), graph->getWeightedEdge(), graph->getWeightedNode());
@@ -434,7 +326,7 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
         }
 
         //Rede Pert
-        case 14:
+        case 4:
         {
             //   ./execGrupo6 entradaPert.txt saida.dot 1 1 0
 
@@ -468,45 +360,14 @@ void selecionar(int selecao, Graph* graph, ofstream& output_file){
         }
 
         //imprime Grafo
-        case 15:
+        case 5:
         {
             cout << "primeiro noh: " << graph->getFirstNode()->getId() <<" | ultimo noh: " << graph->getLastNode()->getId();
             graph->imprimeGrafo();
             //system("pause");
             break;
         }
-        //
-        case 16:{
-            /*
-            Graph* novo = new Graph(0, false, false, false);
-            cout << "-Grafo Subjacente-" << endl;
-            novo->getSubjacent();
-            novo->imprimeGrafo();
-            */
-            break;
-        }
-        case 17:{
-            cout << "-Caminho entre 2 nós-" << endl;
-            cout << "Gostaria de verificar se existe um caminho entre os nós: " << endl;
-            int no1, no2;
-            cin >> no1 >> no2;
-            if(!graph->depthFirstSearch(no1, no2))
-                cout << "NÃO EXISTE!(FALSE)" << endl;
-            else
-                cout << "EXISTE!(TRUE)" << endl;
-            break;
-        }
-        case 18:{
-            //exemplo de criacao de grafo:
-            Graph* grafo2;
-            grafo2 = criaGrafo(output_file, graph->getDirected(), graph->getWeightedEdge(), graph->getWeightedNode());
 
-            //se quiser adicionar na saida para gerar imagem:
-            //saida(output_file, grafo2);
-
-            //não esquecer de desalocar o grafo
-            delete grafo2;
-        }
   }
 }
 
@@ -608,7 +469,6 @@ int main(int argc, char const *argv[]) {
     
     mainMenu(output_file, graph, input_file_name, output_file_name);
 
-    
 
     //Fechando arquivo de entrada
     input_file.close();

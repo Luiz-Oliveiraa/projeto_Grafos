@@ -1,9 +1,0 @@
-
-/*
-
-____________REDE PERT____________
-
-
-Não foi possivel realizar o pert, pois o grafo não é direcionado
-
-*/
