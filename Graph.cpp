@@ -555,41 +555,7 @@ bool Graph::auxDepthFirstSearch(int initialId, int targetId, Node* p){
         return auxDepthFirstSearch(initialId, targetId, p->getNextNode());
     return true;
 }
-/*
 
-void Graph::breadthFirstSearch(ofstream &output_file){
-    
-}
-
-
-Graph *Graph::getComplement(){
-    
-}
-*/
-    
-
-//A function that returns a subjacent of a directed graph, which is a graph which the arcs have opposite directions to the original graph
-/*
-Graph* Graph::getSubjacent(){
-    //cria um novo grafo e ele recebe os primeiros parâmetros
-    Graph* novo_grafo = new Graph(0, false, false, false);
-    Node* p = this->first_node;
-    Edge* e = p->getFirstEdge();
-    novo_grafo->first_node = p;
-    novo_grafo->last_node = p;
-    novo_grafo->order = 0;
-    novo_grafo->number_edges = 0;
-    //faz o novo grafo mudando de digrafo para grafo base
-    for(p = this->first_node, e = p->getFirstEdge(); p != nullptr, e != nullptr; p = p->getNextNode(), e = e->getNextEdge()){
-        novo_grafo->insertNode(p->getId(), p->getWeight());
-        novo_grafo->insertEdge(p->getId(), e->getTargetId(), e->getWeight());
-        novo_grafo->number_edges++;
-        novo_grafo->order++;
-        novo_grafo->last_node = p;
-    }
-    return novo_grafo;
-}
-*/
 
 // Alterações no Grafo Interseção
 Graph* Graph::graphIntersection(Graph* graph2){
@@ -725,26 +691,3 @@ Graph* Graph::graphUnion(Graph* graph2)
 
     return graph_union;
 }
-/*
-bool Graph::connectedGraph(){
-    
-}
-
-
-
-bool Graph::hasCircuit(){
-    
-}
-
-
-
-float** Graph::floydMarshall(){
-    
-}
-
-   
-
-float* Graph::dijkstra(int id){
-    
-}
-*/
