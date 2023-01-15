@@ -57,7 +57,7 @@ void Graph::inicializaGrafo(){
         this->first_node = primeiro;
         this->last_node = primeiro;
         //cria nó com id = -1, no final da lista
-        for(int i=1; i < this->order; i++){
+        for(int i=1; i < this->order-1; i++){
             Node *auxNode = new Node(-1, i);
             this->last_node->setNextNode(auxNode);
             this->last_node = auxNode;
